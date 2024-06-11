@@ -9,6 +9,7 @@ const io = socketIo(server);
 const PORT = 3000;
 const WIDTH = 40;
 const HEIGHT = 30;
+const INITIAL_SNAKE_LENGTH = 4;
 const gameState = {
   players: {},
   fruits: [],
@@ -67,16 +68,19 @@ function movePlayer(player) {
 io.on("connection", (socket) => {
   console.log("New player connected:", socket.id);
 
+  // Initialize the snake with a length of 4
+  const initialX = Math.floor(Math.random() * WIDTH);
+  const initialY = Math.floor(Math.random() * HEIGHT);
+  const initialSnake = [];
+  for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
+    initialSnake.push({ x: initialX, y: initialY });
+  }
+
   gameState.players[socket.id] = {
-    x: Math.floor(Math.random() * WIDTH),
-    y: Math.floor(Math.random() * HEIGHT),
+    x: initialX,
+    y: initialY,
     direction: "right",
-    snake: [
-      {
-        x: Math.floor(Math.random() * WIDTH),
-        y: Math.floor(Math.random() * HEIGHT),
-      },
-    ],
+    snake: initialSnake,
     grow: false,
   };
 
