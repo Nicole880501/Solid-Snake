@@ -58,6 +58,7 @@ function movePlayer(player) {
   player.snake.unshift(newHead);
   player.x = newHead.x;
   player.y = newHead.y;
+  player.lastMoveDirection = player.direction;
   if (player.grow) {
     player.grow = false;
   } else {
@@ -80,6 +81,7 @@ io.on("connection", (socket) => {
     x: initialX,
     y: initialY,
     direction: "right",
+    lastMoveDirection: "right", // Track the last move direction
     snake: initialSnake,
     grow: false,
   };
@@ -88,8 +90,27 @@ io.on("connection", (socket) => {
     gameState.fruits.push(generateFruit());
   }
 
-  socket.on("changeDirection", (direction) => {
-    gameState.players[socket.id].direction = direction;
+  socket.on("changeDirection", (newDirection) => {
+    const player = gameState.players[socket.id];
+    const currentDirection = player.direction;
+
+    // Prevent the snake from reversing direction
+    if (
+      (newDirection === "left" &&
+        currentDirection !== "right" &&
+        player.lastMoveDirection !== "right") ||
+      (newDirection === "right" &&
+        currentDirection !== "left" &&
+        player.lastMoveDirection !== "left") ||
+      (newDirection === "up" &&
+        currentDirection !== "down" &&
+        player.lastMoveDirection !== "down") ||
+      (newDirection === "down" &&
+        currentDirection !== "up" &&
+        player.lastMoveDirection !== "up")
+    ) {
+      gameState.players[socket.id].direction = newDirection;
+    }
   });
 
   socket.on("disconnect", () => {
