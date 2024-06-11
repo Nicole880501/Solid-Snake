@@ -26,7 +26,46 @@ function checkCollision(player, fruit) {
   return player.x === fruit.x && player.y === fruit.y;
 }
 
-function movePlayer(player) {
+function checkSelfCollision(player) {
+  const head = player.snake[0];
+  for (let i = 1; i < player.snake.length; i++) {
+    if (head.x === player.snake[i].x && head.y === player.snake[i].y) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkOtherPlayersCollision(player, gameState) {
+  const head = player.snake[0];
+  for (let playerId in gameState.players) {
+    if (playerId !== player.id) {
+      const otherPlayer = gameState.players[playerId];
+      for (let segment of otherPlayer.snake) {
+        if (head.x === segment.x && head.y === segment.y) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function checkHeadCollision(player, gameState) {
+  const head = player.snake[0];
+  for (let playerId in gameState.players) {
+    if (playerId !== player.id) {
+      const otherPlayer = gameState.players[playerId];
+      const otherHead = otherPlayer.snake[0];
+      if (head.x === otherHead.x && head.y === otherHead.y) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function movePlayer(player, gameState) {
   let newHead = { x: player.x, y: player.y };
   switch (player.direction) {
     case "up":
@@ -64,6 +103,17 @@ function movePlayer(player) {
   } else {
     player.snake.pop();
   }
+
+  // Check collisions
+  if (
+    checkSelfCollision(player) ||
+    checkOtherPlayersCollision(player, gameState) ||
+    checkHeadCollision(player, gameState)
+  ) {
+    return false; // Player is dead
+  }
+
+  return true; // Player is alive
 }
 
 io.on("connection", (socket) => {
@@ -78,6 +128,7 @@ io.on("connection", (socket) => {
   }
 
   gameState.players[socket.id] = {
+    id: socket.id,
     x: initialX,
     y: initialY,
     direction: "right",
@@ -120,18 +171,30 @@ io.on("connection", (socket) => {
 });
 
 setInterval(() => {
+  const playersToRemove = [];
   for (let playerId in gameState.players) {
     let player = gameState.players[playerId];
-    movePlayer(player);
+    const alive = movePlayer(player, gameState);
 
-    gameState.fruits.forEach((fruit, index) => {
-      if (checkCollision(player, fruit)) {
-        player.grow = true;
-        gameState.fruits.splice(index, 1);
-        gameState.fruits.push(generateFruit());
-      }
-    });
+    if (!alive) {
+      playersToRemove.push(playerId);
+      io.to(playerId).emit("death");
+    } else {
+      gameState.fruits.forEach((fruit, index) => {
+        if (checkCollision(player, fruit)) {
+          player.grow = true;
+          gameState.fruits.splice(index, 1);
+          gameState.fruits.push(generateFruit());
+        }
+      });
+    }
   }
+
+  // Remove dead players
+  playersToRemove.forEach((playerId) => {
+    delete gameState.players[playerId];
+  });
+
   io.sockets.emit("gameState", gameState);
 }, 100);
 

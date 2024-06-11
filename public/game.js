@@ -11,6 +11,11 @@ socket.on("gameState", (state) => {
   draw();
 });
 
+socket.on("death", () => {
+  alert("You have died!");
+  socket.disconnect();
+});
+
 window.addEventListener("keydown", (event) => {
   switch (event.key) {
     case "ArrowUp":
