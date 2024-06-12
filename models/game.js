@@ -95,11 +95,12 @@ function movePlayer(player, gameState) {
     player.snake.pop();
   }
 
-  // Check collisions
+  // Check collisions only if not invincible
   if (
-    checkSelfCollision(player) ||
-    checkOtherPlayersCollision(player, gameState) ||
-    checkHeadCollision(player, gameState)
+    !player.invincible &&
+    (checkSelfCollision(player) ||
+      checkOtherPlayersCollision(player, gameState) ||
+      checkHeadCollision(player, gameState))
   ) {
     return false; // Player is dead
   }

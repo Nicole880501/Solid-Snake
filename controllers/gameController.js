@@ -26,11 +26,18 @@ function onConnection(socket) {
     lastMoveDirection: "right",
     snake: initialSnake,
     grow: false,
+    invincible: true,
   };
 
   if (gameState.fruits.length === 0) {
     gameState.fruits.push(generateFruit());
   }
+
+  setTimeout(() => {
+    if (gameState.players[socket.id]) {
+      gameState.players[socket.id].invincible = false;
+    }
+  }, 3000);
 
   socket.on("changeDirection", (newDirection) => {
     const player = gameState.players[socket.id];
