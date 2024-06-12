@@ -1,5 +1,5 @@
-const WIDTH = 40;
-const HEIGHT = 30;
+const WIDTH = 60;
+const HEIGHT = 40;
 
 const gameState = {
   players: {},
