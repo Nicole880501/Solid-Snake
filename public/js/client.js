@@ -5,6 +5,7 @@ const ctx = canvas.getContext("2d");
 const scale = 20;
 
 let gameState = {};
+let boostAvailable = true;
 
 socket.on("gameState", (state) => {
   gameState = state;
@@ -29,6 +30,9 @@ window.addEventListener("keydown", (event) => {
       break;
     case "ArrowRight":
       socket.emit("changeDirection", "right");
+      break;
+    case " ":
+      socket.emit("setSpeed", true);
       break;
   }
 });
