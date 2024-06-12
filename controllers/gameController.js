@@ -6,6 +6,10 @@ const {
 } = require("../models/game");
 
 const INITIAL_SNAKE_LENGTH = 4;
+const DEFAULT_INTERVAL = 100;
+const ACCELERATED_INTERVAL = 50;
+const ACCELERATE_DURATION = 3000;
+const COOLDOWN_DURATION = 20000;
 
 function onConnection(socket) {
   console.log("New player connected:", socket.id);
@@ -26,13 +30,17 @@ function onConnection(socket) {
     lastMoveDirection: "right",
     snake: initialSnake,
     grow: false,
-    invincible: true,
+    invincible: true, // Set player as invincible initially
+    interval: DEFAULT_INTERVAL,
+    accelerated: false,
+    cooldown: false,
   };
 
   if (gameState.fruits.length === 0) {
     gameState.fruits.push(generateFruit());
   }
 
+  // Remove invincibility after 3 seconds
   setTimeout(() => {
     if (gameState.players[socket.id]) {
       gameState.players[socket.id].invincible = false;
@@ -61,6 +69,24 @@ function onConnection(socket) {
     }
   });
 
+  socket.on("setSpeed", () => {
+    const player = gameState.players[socket.id];
+    if (!player.cooldown) {
+      player.accelerated = true;
+      player.interval = ACCELERATED_INTERVAL;
+
+      setTimeout(() => {
+        player.accelerated = false;
+        player.interval = DEFAULT_INTERVAL;
+        player.cooldown = true;
+
+        setTimeout(() => {
+          player.cooldown = false;
+        }, COOLDOWN_DURATION);
+      }, ACCELERATE_DURATION);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("Player disconnected:", socket.id);
     delete gameState.players[socket.id];
@@ -71,19 +97,24 @@ function gameLoop(io) {
   const playersToRemove = [];
   for (let playerId in gameState.players) {
     let player = gameState.players[playerId];
-    const alive = movePlayer(player, gameState);
 
-    if (!alive) {
-      playersToRemove.push(playerId);
-      io.to(playerId).emit("death");
-    } else {
-      gameState.fruits.forEach((fruit, index) => {
-        if (checkCollision(player, fruit)) {
-          player.grow = true;
-          gameState.fruits.splice(index, 1);
-          gameState.fruits.push(generateFruit());
-        }
-      });
+    const now = Date.now();
+    if (!player.lastMove || now - player.lastMove >= player.interval) {
+      const alive = movePlayer(player, gameState);
+      player.lastMove = now;
+
+      if (!alive) {
+        playersToRemove.push(playerId);
+        io.to(playerId).emit("death");
+      } else {
+        gameState.fruits.forEach((fruit, index) => {
+          if (checkCollision(player, fruit)) {
+            player.grow = true;
+            gameState.fruits.splice(index, 1);
+            gameState.fruits.push(generateFruit());
+          }
+        });
+      }
     }
   }
 

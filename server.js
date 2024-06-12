@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
 
 setInterval(() => {
   gameLoop(io);
-}, 100);
+}, 10);
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
