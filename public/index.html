@@ -5,16 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multiplayer Snake Game</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=DotGothic16&display=swap");
       body {
         background-color: black;
+        font-family: "DotGothic16", sans-serif;
+        font-weight: 400;
+        font-style: normal;
       }
-      canvas {
+      #game_container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      #gameCanvas {
         border: 5px solid lightpink;
+      }
+      #leaderboard {
+        margin-left: 50px;
+        color: aqua;
       }
     </style>
   </head>
   <body>
-    <canvas id="gameCanvas" width="1200" height="800"></canvas>
+    <div id="game_container">
+      <canvas id="gameCanvas" width="1200" height="800"></canvas>
+      <div id="leaderboard">
+        <h2>排行榜</h2>
+      </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/client.js"></script>
   </body>

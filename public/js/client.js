@@ -37,9 +37,7 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+function drawPlayer() {
   for (let playerId in gameState.players) {
     let player = gameState.players[playerId];
     ctx.fillStyle = "white";
@@ -47,14 +45,38 @@ function draw() {
       ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
     });
   }
+}
 
+function drawFruits() {
   gameState.fruits.forEach((fruit) => {
     ctx.fillStyle = "yellow";
     ctx.fillRect(fruit.x * scale, fruit.y * scale, scale, scale);
   });
+}
 
+function drawBadFruits() {
   gameState.badFruits.forEach((badFruit) => {
     ctx.fillStyle = "red";
     ctx.fillRect(badFruit.x * scale, badFruit.y * scale, scale, scale);
   });
+}
+
+function drawLeaderboard() {
+  const leaderboard = document.getElementById("leaderboard");
+  leaderboard.innerHTML = `<h2>排行榜</h2>`;
+  const players = Object.values(gameState.players);
+  players.sort((a, b) => a.score - b.score);
+  players.forEach((player) => {
+    const playerElement = document.createElement("div");
+    playerElement.textContent = `玩家 ${player.id}: ${player.score}`;
+    leaderboard.appendChild(playerElement);
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawPlayer();
+  drawFruits();
+  drawBadFruits();
+  drawLeaderboard();
 }
