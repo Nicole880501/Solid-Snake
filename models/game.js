@@ -4,6 +4,7 @@ const HEIGHT = 40;
 const gameState = {
   players: {},
   fruits: [],
+  badFruits: [],
 };
 
 function generateFruit() {
