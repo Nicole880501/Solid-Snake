@@ -34,6 +34,7 @@ function onConnection(socket) {
     interval: DEFAULT_INTERVAL,
     accelerated: false,
     cooldown: false,
+    score: 0,
   };
 
   if (gameState.fruits.length === 0) {
@@ -113,6 +114,7 @@ function gameLoop(io) {
         gameState.fruits.forEach((fruit, index) => {
           if (checkCollision(player, fruit)) {
             player.grow = true;
+            player.score += 10;
             gameState.fruits.splice(index, 1);
             gameState.fruits.push(generateFruit());
           }
@@ -122,6 +124,7 @@ function gameLoop(io) {
           if (checkCollision(player, badFruit)) {
             if (player.snake.length > 1) {
               player.snake.pop();
+              player.score -= 10;
             }
             gameState.badFruits.splice(index, 1);
             gameState.badFruits.push(generateFruit());

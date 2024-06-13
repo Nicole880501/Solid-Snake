@@ -61,9 +61,22 @@ function drawBadFruits() {
   });
 }
 
+function drawLeaderboard() {
+  const leaderboard = document.getElementById("leaderboard");
+  leaderboard.innerHTML = `<h2>排行榜</h2>`;
+  const players = Object.values(gameState.players);
+  players.sort((a, b) => a.score - b.score);
+  players.forEach((player) => {
+    const playerElement = document.createElement("div");
+    playerElement.textContent = `玩家 ${player.id}: ${player.score}`;
+    leaderboard.appendChild(playerElement);
+  });
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawPlayer();
   drawFruits();
   drawBadFruits();
+  drawLeaderboard();
 }
