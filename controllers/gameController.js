@@ -39,6 +39,9 @@ function onConnection(socket) {
   if (gameState.fruits.length === 0) {
     gameState.fruits.push(generateFruit());
   }
+  if (gameState.badFruits.length === 0) {
+    gameState.badFruits.push(generateFruit());
+  }
 
   // Remove invincibility after 3 seconds
   setTimeout(() => {
@@ -112,6 +115,16 @@ function gameLoop(io) {
             player.grow = true;
             gameState.fruits.splice(index, 1);
             gameState.fruits.push(generateFruit());
+          }
+        });
+
+        gameState.badFruits.forEach((badFruit, index) => {
+          if (checkCollision(player, badFruit)) {
+            if (player.snake.length > 1) {
+              player.snake.pop();
+            }
+            gameState.badFruits.splice(index, 1);
+            gameState.badFruits.push(generateFruit());
           }
         });
       }

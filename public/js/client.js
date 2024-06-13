@@ -52,4 +52,9 @@ function draw() {
     ctx.fillStyle = "yellow";
     ctx.fillRect(fruit.x * scale, fruit.y * scale, scale, scale);
   });
+
+  gameState.badFruits.forEach((badFruit) => {
+    ctx.fillStyle = "red";
+    ctx.fillRect(badFruit.x * scale, badFruit.y * scale, scale, scale);
+  });
 }
