@@ -23,9 +23,24 @@
         margin-left: 50px;
         color: aqua;
       }
+      #controls {
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
+    <div id="controls">
+      <label for="color" style="color: aqua">Choose snake color:</label>
+      <select id="color">
+        <option value="white">White</option>
+        <option value="rainbow">Rainbow</option>
+        <option value="blue">Blue</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="yellow">Yellow</option>
+      </select>
+      <button id="startButton">Start Game</button>
+    </div>
     <div id="game_container">
       <canvas id="gameCanvas" width="1200" height="800"></canvas>
       <div id="leaderboard">

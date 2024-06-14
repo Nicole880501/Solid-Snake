@@ -7,6 +7,11 @@ const scale = 20;
 let gameState = {};
 let boostAvailable = true;
 
+document.getElementById("startButton").addEventListener("click", () => {
+  const playerColor = document.getElementById("color").value;
+  socket.emit("startGame", { color: playerColor });
+});
+
 socket.on("gameState", (state) => {
   gameState = state;
   draw();
@@ -40,11 +45,35 @@ window.addEventListener("keydown", (event) => {
 function drawPlayer() {
   for (let playerId in gameState.players) {
     let player = gameState.players[playerId];
-    ctx.fillStyle = "white";
-    player.snake.forEach((segment) => {
-      ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
-    });
+    if (player.color === "rainbow") {
+      drawRainbowSnake(player);
+    } else {
+      drawSnake(player);
+    }
   }
+}
+
+function drawSnake(player) {
+  ctx.fillStyle = player.color;
+  player.snake.forEach((segment) => {
+    ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+  });
+}
+
+function drawRainbowSnake(player) {
+  const colors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "indigo",
+    "violet",
+  ];
+  player.snake.forEach((segment, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+  });
 }
 
 function drawFruits() {
