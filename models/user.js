@@ -25,4 +25,5 @@ exports.getUserByEmail = async (email) => {
     "SELECT * FROM Users WHERE email = ?",
     email
   );
+  return result[0];
 };
