@@ -3,6 +3,7 @@ const {
   generateFruit,
   movePlayer,
   checkCollision,
+  checkHeadCollision,
 } = require("../models/game");
 
 const INITIAL_SNAKE_LENGTH = 4;
@@ -14,42 +15,43 @@ const COOLDOWN_DURATION = 20000;
 function onConnection(socket) {
   console.log("New player connected:", socket.id);
 
-  // Initialize the snake with a length of 4
-  const initialX = Math.floor(Math.random() * 20);
-  const initialY = Math.floor(Math.random() * 20);
-  const initialSnake = [];
-  for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
-    initialSnake.push({ x: initialX, y: initialY });
-  }
-
-  gameState.players[socket.id] = {
-    id: socket.id,
-    x: initialX,
-    y: initialY,
-    direction: "right",
-    lastMoveDirection: "right",
-    snake: initialSnake,
-    grow: false,
-    invincible: true, // Set player as invincible initially
-    interval: DEFAULT_INTERVAL,
-    accelerated: false,
-    cooldown: false,
-    score: 0,
-  };
-
-  if (gameState.fruits.length === 0) {
-    gameState.fruits.push(generateFruit());
-  }
-  if (gameState.badFruits.length === 0) {
-    gameState.badFruits.push(generateFruit());
-  }
-
-  // Remove invincibility after 3 seconds
-  setTimeout(() => {
-    if (gameState.players[socket.id]) {
-      gameState.players[socket.id].invincible = false;
+  socket.on("startGame", (data) => {
+    const initialX = Math.floor(Math.random() * 20);
+    const initialY = Math.floor(Math.random() * 20);
+    const initialSnake = [];
+    for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
+      initialSnake.push({ x: initialX, y: initialY });
     }
-  }, 3000);
+
+    gameState.players[socket.id] = {
+      id: socket.id,
+      x: initialX,
+      y: initialY,
+      direction: "right",
+      lastMoveDirection: "right",
+      snake: initialSnake,
+      grow: false,
+      invincible: true,
+      interval: DEFAULT_INTERVAL,
+      accelerated: false,
+      cooldown: false,
+      score: 0,
+      color: data.color, // Store player color
+    };
+
+    if (gameState.fruits.length === 0) {
+      gameState.fruits.push(generateFruit());
+    }
+    if (gameState.badFruits.length === 0) {
+      gameState.badFruits.push(generateFruit());
+    }
+
+    setTimeout(() => {
+      if (gameState.players[socket.id]) {
+        gameState.players[socket.id].invincible = false;
+      }
+    }, 3000);
+  });
 
   socket.on("changeDirection", (newDirection) => {
     const player = gameState.players[socket.id];
@@ -99,6 +101,7 @@ function onConnection(socket) {
 
 function gameLoop(io) {
   const playersToRemove = [];
+  const headCollisions = [];
   for (let playerId in gameState.players) {
     let player = gameState.players[playerId];
 
@@ -133,6 +136,18 @@ function gameLoop(io) {
       }
     }
   }
+  // Check head collisions after all moves
+  for (let playerId in gameState.players) {
+    let player = gameState.players[playerId];
+    if (checkHeadCollision(player, gameState)) {
+      headCollisions.push(playerId);
+    }
+  }
+
+  headCollisions.forEach((playerId) => {
+    playersToRemove.push(playerId);
+    io.to(playerId).emit("death");
+  });
 
   setTimeout(() => {
     playersToRemove.forEach((playerId) => {

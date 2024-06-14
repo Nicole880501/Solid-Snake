@@ -100,8 +100,7 @@ function movePlayer(player, gameState) {
   if (
     !player.invincible &&
     (checkSelfCollision(player) ||
-      checkOtherPlayersCollision(player, gameState) ||
-      checkHeadCollision(player, gameState))
+      checkOtherPlayersCollision(player, gameState))
   ) {
     return false; // Player is dead
   }
@@ -114,4 +113,5 @@ module.exports = {
   generateFruit,
   movePlayer,
   checkCollision,
+  checkHeadCollision,
 };
