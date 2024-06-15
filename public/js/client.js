@@ -6,10 +6,12 @@ const scale = 20;
 
 let gameState = {};
 let boostAvailable = true;
+let playerName = "";
 
 document.getElementById("startButton").addEventListener("click", () => {
+  playerName = document.getElementById("username").value;
   const playerColor = document.getElementById("color").value;
-  socket.emit("startGame", { color: playerColor });
+  socket.emit("startGame", { name: playerName, color: playerColor });
 });
 
 socket.on("gameState", (state) => {
@@ -97,7 +99,7 @@ function drawLeaderboard() {
   players.sort((a, b) => b.score - a.score);
   players.forEach((player) => {
     const playerElement = document.createElement("div");
-    playerElement.textContent = `玩家 ${player.id}: ${player.score}`;
+    playerElement.textContent = `玩家 ${player.name}: ${player.score}`;
     leaderboard.appendChild(playerElement);
   });
 }

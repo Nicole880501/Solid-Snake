@@ -25,6 +25,7 @@ function onConnection(socket) {
 
     gameState.players[socket.id] = {
       id: socket.id,
+      name: data.name,
       x: initialX,
       y: initialY,
       direction: "right",
