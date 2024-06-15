@@ -6,12 +6,11 @@ const scale = 20;
 
 let gameState = {};
 let boostAvailable = true;
-let playerName = "";
 
 document.getElementById("startButton").addEventListener("click", () => {
-  playerName = document.getElementById("username").value;
+  const token = getCookie("access_token");
   const playerColor = document.getElementById("color").value;
-  socket.emit("startGame", { name: playerName, color: playerColor });
+  socket.emit("startGame", { token: token, color: playerColor });
 });
 
 socket.on("gameState", (state) => {
@@ -43,6 +42,12 @@ window.addEventListener("keydown", (event) => {
       break;
   }
 });
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
 
 function drawPlayer() {
   for (let playerId in gameState.players) {
