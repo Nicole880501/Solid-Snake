@@ -1,22 +1,27 @@
 document
-  .getElementById("loginForm")
+  .getElementById("signupForm")
   .addEventListener("submit", async function (event) {
     event.preventDefault();
+    const playerName = document.getElementById("playerName").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch("/user/signin", {
+      const response = await fetch("/user/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email, password: password }),
+        body: JSON.stringify({
+          name: playerName,
+          email: email,
+          password: password,
+        }),
       });
 
       if (response.ok) {
-        alert("Login successful!");
-        window.location.href = "./home.html";
+        alert("Registration successful! Redirecting to login page...");
+        window.location.href = "./signin.html";
         // You can handle the success case here, such as redirecting the user
       } else {
         const errorData = await response.json();
@@ -24,6 +29,6 @@ document
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while logging in.");
+      alert("An error occurred while signup in.");
     }
   });
