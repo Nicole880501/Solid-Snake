@@ -94,7 +94,7 @@ function drawLeaderboard() {
   const leaderboard = document.getElementById("leaderboard");
   leaderboard.innerHTML = `<h2>排行榜</h2>`;
   const players = Object.values(gameState.players);
-  players.sort((a, b) => a.score - b.score);
+  players.sort((a, b) => b.score - a.score);
   players.forEach((player) => {
     const playerElement = document.createElement("div");
     playerElement.textContent = `玩家 ${player.id}: ${player.score}`;
