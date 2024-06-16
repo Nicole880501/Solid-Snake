@@ -8,8 +8,9 @@ let gameState = {};
 let boostAvailable = true;
 
 document.getElementById("startButton").addEventListener("click", () => {
+  const token = getCookie("access_token");
   const playerColor = document.getElementById("color").value;
-  socket.emit("startGame", { color: playerColor });
+  socket.emit("startGame", { token: token, color: playerColor });
 });
 
 socket.on("gameState", (state) => {
@@ -41,6 +42,12 @@ window.addEventListener("keydown", (event) => {
       break;
   }
 });
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
 
 function drawPlayer() {
   for (let playerId in gameState.players) {
@@ -94,10 +101,10 @@ function drawLeaderboard() {
   const leaderboard = document.getElementById("leaderboard");
   leaderboard.innerHTML = `<h2>排行榜</h2>`;
   const players = Object.values(gameState.players);
-  players.sort((a, b) => a.score - b.score);
+  players.sort((a, b) => b.score - a.score);
   players.forEach((player) => {
     const playerElement = document.createElement("div");
-    playerElement.textContent = `玩家 ${player.id}: ${player.score}`;
+    playerElement.textContent = `玩家 ${player.name}: ${player.score}`;
     leaderboard.appendChild(playerElement);
   });
 }

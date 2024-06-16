@@ -7,9 +7,18 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const PORT = 3000;
+const dotenv = require("dotenv");
+dotenv.config();
 
+const userRoutes = require("./routes/user");
+const recordRoutes = require("./routes/record");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+app.use("/user", userRoutes);
+app.use("/record", recordRoutes);
 
 io.on("connection", (socket) => {
   onConnection(socket);
@@ -19,6 +28,6 @@ setInterval(() => {
   gameLoop(io);
 }, 10);
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(process.env.PORT || 4000, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
