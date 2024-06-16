@@ -7,6 +7,7 @@ const {
   checkHeadCollision,
 } = require("../models/game");
 const { getUser } = require("../models/user");
+const { createRecord } = require("../models/record");
 
 const INITIAL_SNAKE_LENGTH = 4;
 const DEFAULT_INTERVAL = 100;
@@ -105,10 +106,38 @@ function onConnection(socket) {
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("Player disconnected:", socket.id);
-    delete gameState.players[socket.id];
+    const player = gameState.players[socket.id];
+    if (player) {
+      try {
+        await createRecord({
+          user_name: player.name,
+          skin: player.color,
+          score: player.score,
+        });
+        delete gameState.players[socket.id];
+      } catch (error) {
+        console.log("failed to create record:", error);
+      }
+    }
   });
+}
+
+async function handlePlayerDeath(playerId) {
+  const player = gameState.players[playerId];
+  if (player) {
+    try {
+      await createRecord({
+        user_name: player.name,
+        skin: player.color,
+        score: player.score,
+      });
+      delete gameState.players[playerId];
+    } catch (error) {
+      console.log("failed to create record:", error);
+    }
+  }
 }
 
 function gameLoop(io) {
@@ -163,7 +192,7 @@ function gameLoop(io) {
 
   setTimeout(() => {
     playersToRemove.forEach((playerId) => {
-      delete gameState.players[playerId];
+      handlePlayerDeath(playerId);
     });
   }, 1000);
 

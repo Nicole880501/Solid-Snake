@@ -11,12 +11,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const userRoutes = require("./routes/user");
+const recordRoutes = require("./routes/record");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use("/user", userRoutes);
+app.use("/record", recordRoutes);
 
 io.on("connection", (socket) => {
   onConnection(socket);

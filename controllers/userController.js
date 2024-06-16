@@ -6,7 +6,7 @@ const { createUser, getUser, getUserByEmail } = require("../models/user");
 const client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: "http://localhost:3000/user/google/callback",
+  redirectUri: `${process.env.HOST}/user/google/callback`,
 });
 
 exports.signup = async (req, res) => {
