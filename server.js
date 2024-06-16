@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const { onConnection, gameLoop } = require("./controllers/gameController");
+const { errorHandler, socketErrorHandler } = require("./utils/errorHandler");
 
 const app = express();
 const path = require("path");
@@ -39,6 +40,10 @@ io.on("connection", (socket) => {
 setInterval(() => {
   gameLoop(io);
 }, 10);
+
+app.use(errorHandler);
+
+socketErrorHandler(server);
 
 server.listen(process.env.PORT || 4000, () => {
   console.log(`Server running on port ${process.env.PORT}`);
