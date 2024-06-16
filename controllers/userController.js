@@ -147,7 +147,7 @@ exports.googleCallback = async (req, res) => {
       expiresIn: EXPIRE_TIME,
     });
 
-    res.cookie("access_token", token).status(200).redirect("/home"); // 跳轉回前端頁面
+    res.cookie("access_token", token).status(200).redirect("/match"); // 跳轉回前端頁面
   } catch (error) {
     console.error(error);
     res.status(400).send("Error fetching Google user info");
