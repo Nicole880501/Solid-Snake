@@ -4,7 +4,7 @@ const {
   getRanking,
 } = require("../controllers/recordController");
 
-router.get("/maxScore", getPersonalMaxScore);
+router.post("/maxScore", getPersonalMaxScore);
 
 router.get("/ranking", getRanking);
 

@@ -1,8 +1,11 @@
+const jwt = require("jsonwebtoken");
 const { getPersonalRecord, getAllPlayerRecord } = require("../models/record");
 
 exports.getPersonalMaxScore = async (req, res) => {
   try {
-    const { username } = req.body;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const username = decoded.name;
 
     const userRecord = await getPersonalRecord(username);
 
@@ -26,8 +29,6 @@ exports.getRanking = async (req, res) => {
     ranking.map((data) => {
       playerData.push(data);
     });
-
-    playerData.sort((a, b) => b.score - a.score);
 
     res.status(200).json({
       data: playerData,

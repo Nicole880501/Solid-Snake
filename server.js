@@ -33,6 +33,10 @@ app.get("/game", async (req, res) => {
   res.sendFile(path.join(__dirname, "public", "game.html"));
 });
 
+app.get("/leaderboard", async (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "leaderboard.html"));
+});
+
 io.on("connection", (socket) => {
   onConnection(socket);
 });
