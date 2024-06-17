@@ -134,7 +134,7 @@ exports.googleCallback = async (req, res) => {
           expiresIn: EXPIRE_TIME,
         });
 
-        res.cookie("access_token", token).status(200).redirect("/game.html"); // 跳轉回前端頁面
+        res.cookie("access_token", token).status(200).redirect("/game"); // 跳轉回前端頁面
       }
       return;
     }

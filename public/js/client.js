@@ -65,8 +65,10 @@ function drawPlayer() {
 
 function drawSnake(player) {
   ctx.fillStyle = player.color;
+  ctx.strokeStyle = "white";
   player.snake.forEach((segment) => {
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+    ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale);
   });
 }
 
@@ -83,6 +85,8 @@ function drawRainbowSnake(player) {
   player.snake.forEach((segment, index) => {
     ctx.fillStyle = colors[index % colors.length];
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+    ctx.strokeStyle = "white";
+    ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale);
   });
 }
 
