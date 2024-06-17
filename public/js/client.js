@@ -10,7 +10,9 @@ let boostAvailable = true;
 document.getElementById("startButton").addEventListener("click", () => {
   const token = getCookie("access_token");
   const playerColor = document.getElementById("color").value;
-  socket.emit("startGame", { token: token, color: playerColor });
+  const width = Math.floor(window.innerWidth / scale);
+  const height = Math.floor(window.innerHeight / scale);
+  socket.emit("startGame", { token: token, color: playerColor, width, height });
 });
 
 socket.on("gameState", (state) => {
@@ -100,12 +102,12 @@ function drawBadFruits() {
 
 function drawLeaderboard() {
   const leaderboard = document.getElementById("leaderboard");
-  leaderboard.innerHTML = `<h2>排行榜</h2>`;
+  leaderboard.innerHTML = `<h2>Leaderboard</h2>`;
   const players = Object.values(gameState.players);
   players.sort((a, b) => b.score - a.score);
   players.forEach((player) => {
     const playerElement = document.createElement("div");
-    playerElement.textContent = `玩家 ${player.name}: ${player.score}`;
+    playerElement.textContent = `player ${player.name}: ${player.score}`;
     leaderboard.appendChild(playerElement);
   });
 }
@@ -117,3 +119,11 @@ function draw() {
   drawBadFruits();
   drawLeaderboard();
 }
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resizeCanvas, false);
+resizeCanvas();
