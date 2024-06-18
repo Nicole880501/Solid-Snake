@@ -100,21 +100,25 @@ function onConnection(socket) {
     }
   });
 
-  socket.on("setSpeed", () => {
-    const player = gameState.players[socket.id];
-    if (!player.cooldown) {
-      player.accelerated = true;
-      player.interval = ACCELERATED_INTERVAL;
-
-      setTimeout(() => {
-        player.accelerated = false;
-        player.interval = DEFAULT_INTERVAL;
-        player.cooldown = true;
+  socket.on("setSpeed", async () => {
+    try {
+      const player = gameState.players[socket.id];
+      if (!player.cooldown) {
+        player.accelerated = true;
+        player.interval = ACCELERATED_INTERVAL;
 
         setTimeout(() => {
-          player.cooldown = false;
-        }, COOLDOWN_DURATION);
-      }, ACCELERATE_DURATION);
+          player.accelerated = false;
+          player.interval = DEFAULT_INTERVAL;
+          player.cooldown = true;
+
+          setTimeout(() => {
+            player.cooldown = false;
+          }, COOLDOWN_DURATION);
+        }, ACCELERATE_DURATION);
+      }
+    } catch (error) {
+      console.log("something wrong:", error);
     }
   });
 
