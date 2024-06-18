@@ -19,9 +19,12 @@ socket.on("gameState", (state) => {
 });
 
 socket.on("death", () => {
-  alert("You died!");
-  socket.disconnect();
-  window.location.href = "/leaderboard";
+  if (confirm("You died ! try again ?") === true) {
+    window.location.href = "/game";
+  } else {
+    socket.disconnect();
+    window.location.href = "/leaderboard";
+  }
 });
 
 window.addEventListener("keydown", (event) => {
