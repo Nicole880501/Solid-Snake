@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const {
   gameState,
-  setDimensions,
   generateFruit,
   movePlayer,
   checkCollision,
@@ -25,11 +24,10 @@ function onConnection(socket) {
       const user = await getUser(decoded.name);
 
       if (user) {
-        setDimensions(data.width, data.height);
-        const initialX = Math.floor(Math.random() * data.width);
-        const initialY = Math.floor(Math.random() * data.height);
+        const initialX = Math.floor(Math.random() * 80);
+        const initialY = Math.floor(Math.random() * 40);
         const initialSnake = [];
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
           initialSnake.push({ x: initialX, y: initialY });
         }
 

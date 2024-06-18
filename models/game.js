@@ -1,16 +1,11 @@
-let WIDTH = 60;
-let HEIGHT = 40;
+const WIDTH = 80;
+const HEIGHT = 40;
 
 const gameState = {
   players: {},
   fruits: [],
   badFruits: [],
 };
-
-function setDimensions(width, height) {
-  WIDTH = width;
-  HEIGHT = height;
-}
 
 function generateFruit() {
   return {
@@ -115,7 +110,6 @@ function movePlayer(player, gameState) {
 
 module.exports = {
   gameState,
-  setDimensions,
   generateFruit,
   movePlayer,
   checkCollision,
