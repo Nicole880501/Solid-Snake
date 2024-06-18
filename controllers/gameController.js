@@ -54,6 +54,11 @@ function onConnection(socket) {
         if (gameState.badFruits.length === 0) {
           gameState.badFruits.push(generateFruit());
         }
+        if (gameState.trapFruits.length === 0) {
+          for (let i = 0; i < 10; i++) {
+            gameState.trapFruits.push(generateFruit());
+          }
+        }
 
         setTimeout(() => {
           if (gameState.players[socket.id]) {
@@ -66,25 +71,28 @@ function onConnection(socket) {
     }
   });
 
-  socket.on("changeDirection", (newDirection) => {
-    const player = gameState.players[socket.id];
-    const currentDirection = player.direction;
-
-    if (
-      (newDirection === "left" &&
-        currentDirection !== "right" &&
-        player.lastMoveDirection !== "right") ||
-      (newDirection === "right" &&
-        currentDirection !== "left" &&
-        player.lastMoveDirection !== "left") ||
-      (newDirection === "up" &&
-        currentDirection !== "down" &&
-        player.lastMoveDirection !== "down") ||
-      (newDirection === "down" &&
-        currentDirection !== "up" &&
-        player.lastMoveDirection !== "up")
-    ) {
-      gameState.players[socket.id].direction = newDirection;
+  socket.on("changeDirection", async (newDirection) => {
+    try {
+      const player = gameState.players[socket.id];
+      const currentDirection = player.direction;
+      if (
+        (newDirection === "left" &&
+          currentDirection !== "right" &&
+          player.lastMoveDirection !== "right") ||
+        (newDirection === "right" &&
+          currentDirection !== "left" &&
+          player.lastMoveDirection !== "left") ||
+        (newDirection === "up" &&
+          currentDirection !== "down" &&
+          player.lastMoveDirection !== "down") ||
+        (newDirection === "down" &&
+          currentDirection !== "up" &&
+          player.lastMoveDirection !== "up")
+      ) {
+        gameState.players[socket.id].direction = newDirection;
+      }
+    } catch {
+      console.log("plz press start game");
     }
   });
 
@@ -172,6 +180,13 @@ function gameLoop(io) {
             }
             gameState.badFruits.splice(index, 1);
             gameState.badFruits.push(generateFruit());
+          }
+        });
+
+        gameState.trapFruits.forEach((trapFruits, index) => {
+          if (checkCollision(player, trapFruits)) {
+            playersToRemove.push(playerId);
+            io.to(playerId).emit("death");
           }
         });
       }

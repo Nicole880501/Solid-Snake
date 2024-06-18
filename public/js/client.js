@@ -102,6 +102,13 @@ function drawBadFruits() {
   });
 }
 
+function drawTrapFruits() {
+  gameState.trapFruits.forEach((trapFruits) => {
+    ctx.fillStyle = "grey";
+    ctx.fillRect(trapFruits.x * scale, trapFruits.y * scale, scale, scale);
+  });
+}
+
 function drawLeaderboard() {
   const leaderboard = document.getElementById("leaderboard");
   leaderboard.innerHTML = `<h3>Leaderboard</h3>`;
@@ -119,5 +126,6 @@ function draw() {
   drawPlayer();
   drawFruits();
   drawBadFruits();
+  drawTrapFruits();
   drawLeaderboard();
 }

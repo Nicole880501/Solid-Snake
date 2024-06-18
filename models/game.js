@@ -5,6 +5,7 @@ const gameState = {
   players: {},
   fruits: [],
   badFruits: [],
+  trapFruits: [],
 };
 
 function generateFruit() {
