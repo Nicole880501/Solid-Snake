@@ -5,6 +5,7 @@ const gameState = {
   players: {},
   fruits: [],
   badFruits: [],
+  rainbowFruits: [],
   trapFruits: [],
 };
 
@@ -13,6 +14,22 @@ function generateFruit() {
     x: Math.floor(Math.random() * WIDTH),
     y: Math.floor(Math.random() * HEIGHT),
   };
+}
+
+function generateRainbowFruit() {
+  const fruit = {
+    x: Math.floor(Math.random() * WIDTH),
+    y: Math.floor(Math.random() * HEIGHT),
+  };
+  gameState.rainbowFruits.push(fruit);
+  setTimeout(() => {
+    const index = gameState.rainbowFruits.indexOf(fruit);
+    if (index !== -1) {
+      gameState.rainbowFruits.splice(index, 1);
+    }
+  }, 5000);
+
+  setTimeout(generateRainbowFruit, Math.random() * 10000 + 5000);
 }
 
 function checkCollision(player, fruit) {
@@ -112,6 +129,7 @@ function movePlayer(player, gameState) {
 module.exports = {
   gameState,
   generateFruit,
+  generateRainbowFruit,
   movePlayer,
   checkCollision,
   checkHeadCollision,

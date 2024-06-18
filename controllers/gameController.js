@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const {
   gameState,
   generateFruit,
+  generateRainbowFruit,
   movePlayer,
   checkCollision,
   checkHeadCollision,
@@ -58,6 +59,9 @@ function onConnection(socket) {
           for (let i = 0; i < 10; i++) {
             gameState.trapFruits.push(generateFruit());
           }
+        }
+        if (gameState.rainbowFruits.length === 0) {
+          generateRainbowFruit();
         }
 
         setTimeout(() => {
@@ -183,7 +187,19 @@ function gameLoop(io) {
           }
         });
 
-        gameState.trapFruits.forEach((trapFruits, index) => {
+        gameState.rainbowFruits.forEach((rainbowFruit, index) => {
+          if (checkCollision(player, rainbowFruit)) {
+            player.grow = true;
+            player.score += 50;
+
+            for (let i = 0; i < 5; i++) {
+              player.snake.push({ ...player.snake[player.snake.length - 1] });
+            }
+            gameState.rainbowFruits.splice(index, 1);
+          }
+        });
+
+        gameState.trapFruits.forEach((trapFruits) => {
           if (checkCollision(player, trapFruits)) {
             playersToRemove.push(playerId);
             io.to(playerId).emit("death");

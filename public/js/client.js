@@ -102,6 +102,28 @@ function drawBadFruits() {
   });
 }
 
+function drawRainbowFruits() {
+  gameState.rainbowFruits.forEach((fruit) => {
+    const gradient = ctx.createLinearGradient(
+      fruit.x * scale,
+      fruit.y * scale,
+      (fruit.x + 1) * scale,
+      (fruit.y + 1) * scale
+    );
+
+    gradient.addColorStop(0, "red");
+    gradient.addColorStop(0.16, "orange");
+    gradient.addColorStop(0.33, "yellow");
+    gradient.addColorStop(0.5, "green");
+    gradient.addColorStop(0.66, "blue");
+    gradient.addColorStop(0.83, "indigo");
+    gradient.addColorStop(1, "violet");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(fruit.x * scale, fruit.y * scale, scale, scale);
+  });
+}
+
 function drawTrapFruits() {
   gameState.trapFruits.forEach((trapFruits) => {
     ctx.fillStyle = "grey";
@@ -126,6 +148,7 @@ function draw() {
   drawPlayer();
   drawFruits();
   drawBadFruits();
+  drawRainbowFruits();
   drawTrapFruits();
   drawLeaderboard();
 }
