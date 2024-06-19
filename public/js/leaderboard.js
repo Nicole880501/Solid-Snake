@@ -50,6 +50,7 @@ async function fetchRanking() {
         <td>${players.data[i].user_name}</td>
         <td>${players.data[i].score}</td>
         <td>${players.data[i].skin}</td>
+        <td>${players.data[i].play_time}'s</td>
         <td>${players.data[i].timestamp}</td>
             `;
       rankingTable.appendChild(row);

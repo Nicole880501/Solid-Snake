@@ -18,9 +18,11 @@ const COOLDOWN_DURATION = 20000;
 
 function onConnection(socket) {
   console.log("New player connected:", socket.id);
+  let onConnectionTime;
 
   socket.on("startGame", async (data) => {
     try {
+      onConnectionTime = Date.now();
       const decoded = jwt.verify(data.token, process.env.JWT_KEY);
       const user = await getUser(decoded.name);
 
@@ -125,6 +127,8 @@ function onConnection(socket) {
   });
 
   socket.on("disconnect", async () => {
+    const disconnectTime = Date.now();
+    const totalConnectionTime = (disconnectTime - onConnectionTime) / 1000;
     console.log("Player disconnected:", socket.id);
     const player = gameState.players[socket.id];
     if (player) {
@@ -133,6 +137,7 @@ function onConnection(socket) {
           user_name: player.name,
           skin: player.color,
           score: player.score,
+          play_time: totalConnectionTime,
         });
         delete gameState.players[socket.id];
       } catch (error) {

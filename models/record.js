@@ -54,6 +54,7 @@ exports.getAllPlayerRecord = async () => {
         user_name,
         skin,
         score,
+        play_time,
         timestamp,
         ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY score DESC, timestamp DESC) as rn
       FROM
@@ -63,6 +64,7 @@ exports.getAllPlayerRecord = async () => {
       user_name,
       skin,
       score,
+      play_time,
       timestamp
     FROM
       RankedRecords
