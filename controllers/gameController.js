@@ -50,7 +50,9 @@ function onConnection(socket) {
         };
 
         if (gameState.fruits.length === 0) {
-          gameState.fruits.push(generateFruit());
+          for (let i = 0; i < 10; i++) {
+            gameState.fruits.push(generateFruit());
+          }
         }
         if (gameState.badFruits.length === 0) {
           gameState.badFruits.push(generateFruit());
