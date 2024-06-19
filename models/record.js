@@ -79,7 +79,7 @@ exports.getAllPlayerRecord = async () => {
       ...row,
       timestamp: format(new Date(row.timestamp), "yyyy-MM-dd HH:mm:ss"),
     }));
-    console.log(formattedTime);
+    // console.log(formattedTime);
     return formattedTime;
   } catch (error) {
     console.error("Error fetching highest score:", error);

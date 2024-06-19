@@ -95,8 +95,8 @@ function onConnection(socket) {
       ) {
         gameState.players[socket.id].direction = newDirection;
       }
-    } catch {
-      console.log("plz press start game");
+    } catch (error) {
+      console.error("plz press start game:", error);
     }
   });
 
