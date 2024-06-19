@@ -23,9 +23,9 @@ exports.signup = async (req, res) => {
       thumbnail: null,
     };
 
-    const existingUser = await await getUser(name);
+    const existingUser = await getUser(name);
     if (existingUser) {
-      res.status(403).json({ error: "玩家名已存在" });
+      res.status(403).json({ error: "玩家名或信箱已被註冊" });
       return;
     }
 
@@ -51,6 +51,7 @@ exports.signup = async (req, res) => {
         },
       });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "sign up failed" });
   }
 };
@@ -134,7 +135,7 @@ exports.googleCallback = async (req, res) => {
           expiresIn: EXPIRE_TIME,
         });
 
-        res.cookie("access_token", token).status(200).redirect("/game.html"); // 跳轉回前端頁面
+        res.cookie("access_token", token).status(200).redirect("/game"); // 跳轉回前端頁面
       }
       return;
     }
@@ -147,7 +148,7 @@ exports.googleCallback = async (req, res) => {
       expiresIn: EXPIRE_TIME,
     });
 
-    res.cookie("access_token", token).status(200).redirect("/home"); // 跳轉回前端頁面
+    res.cookie("access_token", token).status(200).redirect("/match"); // 跳轉回前端頁面
   } catch (error) {
     console.error(error);
     res.status(400).send("Error fetching Google user info");

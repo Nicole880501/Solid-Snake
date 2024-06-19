@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const {
   gameState,
   generateFruit,
+  generateRainbowFruit,
   movePlayer,
   checkCollision,
   checkHeadCollision,
@@ -24,10 +25,10 @@ function onConnection(socket) {
       const user = await getUser(decoded.name);
 
       if (user) {
-        const initialX = Math.floor(Math.random() * 20);
-        const initialY = Math.floor(Math.random() * 20);
+        const initialX = Math.floor(Math.random() * 80);
+        const initialY = Math.floor(Math.random() * 40);
         const initialSnake = [];
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
           initialSnake.push({ x: initialX, y: initialY });
         }
 
@@ -54,6 +55,14 @@ function onConnection(socket) {
         if (gameState.badFruits.length === 0) {
           gameState.badFruits.push(generateFruit());
         }
+        if (gameState.trapFruits.length === 0) {
+          for (let i = 0; i < 10; i++) {
+            gameState.trapFruits.push(generateFruit());
+          }
+        }
+        if (gameState.rainbowFruits.length === 0) {
+          generateRainbowFruit();
+        }
 
         setTimeout(() => {
           if (gameState.players[socket.id]) {
@@ -66,43 +75,50 @@ function onConnection(socket) {
     }
   });
 
-  socket.on("changeDirection", (newDirection) => {
-    const player = gameState.players[socket.id];
-    const currentDirection = player.direction;
-
-    if (
-      (newDirection === "left" &&
-        currentDirection !== "right" &&
-        player.lastMoveDirection !== "right") ||
-      (newDirection === "right" &&
-        currentDirection !== "left" &&
-        player.lastMoveDirection !== "left") ||
-      (newDirection === "up" &&
-        currentDirection !== "down" &&
-        player.lastMoveDirection !== "down") ||
-      (newDirection === "down" &&
-        currentDirection !== "up" &&
-        player.lastMoveDirection !== "up")
-    ) {
-      gameState.players[socket.id].direction = newDirection;
+  socket.on("changeDirection", async (newDirection) => {
+    try {
+      const player = gameState.players[socket.id];
+      const currentDirection = player.direction;
+      if (
+        (newDirection === "left" &&
+          currentDirection !== "right" &&
+          player.lastMoveDirection !== "right") ||
+        (newDirection === "right" &&
+          currentDirection !== "left" &&
+          player.lastMoveDirection !== "left") ||
+        (newDirection === "up" &&
+          currentDirection !== "down" &&
+          player.lastMoveDirection !== "down") ||
+        (newDirection === "down" &&
+          currentDirection !== "up" &&
+          player.lastMoveDirection !== "up")
+      ) {
+        gameState.players[socket.id].direction = newDirection;
+      }
+    } catch (error) {
+      console.error("plz press start game:", error);
     }
   });
 
-  socket.on("setSpeed", () => {
-    const player = gameState.players[socket.id];
-    if (!player.cooldown) {
-      player.accelerated = true;
-      player.interval = ACCELERATED_INTERVAL;
-
-      setTimeout(() => {
-        player.accelerated = false;
-        player.interval = DEFAULT_INTERVAL;
-        player.cooldown = true;
+  socket.on("setSpeed", async () => {
+    try {
+      const player = gameState.players[socket.id];
+      if (!player.cooldown) {
+        player.accelerated = true;
+        player.interval = ACCELERATED_INTERVAL;
 
         setTimeout(() => {
-          player.cooldown = false;
-        }, COOLDOWN_DURATION);
-      }, ACCELERATE_DURATION);
+          player.accelerated = false;
+          player.interval = DEFAULT_INTERVAL;
+          player.cooldown = true;
+
+          setTimeout(() => {
+            player.cooldown = false;
+          }, COOLDOWN_DURATION);
+        }, ACCELERATE_DURATION);
+      }
+    } catch (error) {
+      console.log("something wrong:", error);
     }
   });
 
@@ -172,6 +188,25 @@ function gameLoop(io) {
             }
             gameState.badFruits.splice(index, 1);
             gameState.badFruits.push(generateFruit());
+          }
+        });
+
+        gameState.rainbowFruits.forEach((rainbowFruit, index) => {
+          if (checkCollision(player, rainbowFruit)) {
+            player.grow = true;
+            player.score += 50;
+
+            for (let i = 0; i < 5; i++) {
+              player.snake.push({ ...player.snake[player.snake.length - 1] });
+            }
+            gameState.rainbowFruits.splice(index, 1);
+          }
+        });
+
+        gameState.trapFruits.forEach((trapFruits) => {
+          if (checkCollision(player, trapFruits)) {
+            playersToRemove.push(playerId);
+            io.to(playerId).emit("death");
           }
         });
       }

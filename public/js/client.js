@@ -19,8 +19,12 @@ socket.on("gameState", (state) => {
 });
 
 socket.on("death", () => {
-  alert("You have died!");
-  socket.disconnect();
+  if (confirm("You died ! try again ?") === true) {
+    window.location.href = "/game";
+  } else {
+    socket.disconnect();
+    window.location.href = "/leaderboard";
+  }
 });
 
 window.addEventListener("keydown", (event) => {
@@ -62,8 +66,10 @@ function drawPlayer() {
 
 function drawSnake(player) {
   ctx.fillStyle = player.color;
+  ctx.strokeStyle = "white";
   player.snake.forEach((segment) => {
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+    ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale);
   });
 }
 
@@ -80,6 +86,8 @@ function drawRainbowSnake(player) {
   player.snake.forEach((segment, index) => {
     ctx.fillStyle = colors[index % colors.length];
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
+    ctx.strokeStyle = "white";
+    ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale);
   });
 }
 
@@ -97,14 +105,43 @@ function drawBadFruits() {
   });
 }
 
+function drawRainbowFruits() {
+  gameState.rainbowFruits.forEach((fruit) => {
+    const gradient = ctx.createLinearGradient(
+      fruit.x * scale,
+      fruit.y * scale,
+      (fruit.x + 1) * scale,
+      (fruit.y + 1) * scale
+    );
+
+    gradient.addColorStop(0, "red");
+    gradient.addColorStop(0.16, "orange");
+    gradient.addColorStop(0.33, "yellow");
+    gradient.addColorStop(0.5, "green");
+    gradient.addColorStop(0.66, "blue");
+    gradient.addColorStop(0.83, "indigo");
+    gradient.addColorStop(1, "violet");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(fruit.x * scale, fruit.y * scale, scale, scale);
+  });
+}
+
+function drawTrapFruits() {
+  gameState.trapFruits.forEach((trapFruits) => {
+    ctx.fillStyle = "grey";
+    ctx.fillRect(trapFruits.x * scale, trapFruits.y * scale, scale, scale);
+  });
+}
+
 function drawLeaderboard() {
   const leaderboard = document.getElementById("leaderboard");
-  leaderboard.innerHTML = `<h2>排行榜</h2>`;
+  leaderboard.innerHTML = `<h3>Leaderboard</h3>`;
   const players = Object.values(gameState.players);
   players.sort((a, b) => b.score - a.score);
   players.forEach((player) => {
     const playerElement = document.createElement("div");
-    playerElement.textContent = `玩家 ${player.name}: ${player.score}`;
+    playerElement.textContent = `player ${player.name}: ${player.score}`;
     leaderboard.appendChild(playerElement);
   });
 }
@@ -114,5 +151,7 @@ function draw() {
   drawPlayer();
   drawFruits();
   drawBadFruits();
+  drawRainbowFruits();
+  drawTrapFruits();
   drawLeaderboard();
 }

@@ -16,7 +16,7 @@ document
 
       if (response.ok) {
         alert("Login successful!");
-        window.location.href = "./game.html";
+        window.location.href = "/game";
         // You can handle the success case here, such as redirecting the user
       } else {
         const errorData = await response.json();

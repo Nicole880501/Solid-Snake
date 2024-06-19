@@ -21,7 +21,7 @@ document
 
       if (response.ok) {
         alert("Registration successful! Redirecting to login page...");
-        window.location.href = "./signin.html";
+        window.location.href = "/signin";
         // You can handle the success case here, such as redirecting the user
       } else {
         const errorData = await response.json();
