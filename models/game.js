@@ -53,6 +53,7 @@ function checkOtherPlayersCollision(player, gameState) {
       const otherPlayer = gameState.players[playerId];
       for (let segment of otherPlayer.snake) {
         if (head.x === segment.x && head.y === segment.y) {
+          otherPlayer.kill += 1;
           return true;
         }
       }

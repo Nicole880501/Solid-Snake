@@ -55,8 +55,9 @@ exports.getAllPlayerRecord = async () => {
         skin,
         score,
         play_time,
+        player_kill,
         timestamp,
-        ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY score DESC, timestamp DESC) as rn
+        ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY score DESC, player_kill DESC, timestamp DESC) as rn
       FROM
       Records
     )
@@ -65,13 +66,14 @@ exports.getAllPlayerRecord = async () => {
       skin,
       score,
       play_time,
+      player_kill,
       timestamp
     FROM
       RankedRecords
     WHERE
       rn = 1
     ORDER BY
-      score DESC;
+      score DESC, player_kill DESC, timestamp DESC;
   `;
 
   try {
@@ -81,7 +83,7 @@ exports.getAllPlayerRecord = async () => {
       ...row,
       timestamp: format(new Date(row.timestamp), "yyyy-MM-dd HH:mm:ss"),
     }));
-    // console.log(formattedTime);
+    console.log(formattedTime);
     return formattedTime;
   } catch (error) {
     console.error("Error fetching highest score:", error);

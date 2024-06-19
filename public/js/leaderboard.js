@@ -49,6 +49,7 @@ async function fetchRanking() {
         <td>${i + 1}</td>
         <td>${players.data[i].user_name}</td>
         <td>${players.data[i].score}</td>
+        <td>${players.data[i].player_kill}</td>
         <td>${players.data[i].skin}</td>
         <td>${players.data[i].play_time}'s</td>
         <td>${players.data[i].timestamp}</td>

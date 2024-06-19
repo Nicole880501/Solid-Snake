@@ -141,7 +141,7 @@ function drawLeaderboard() {
   players.sort((a, b) => b.score - a.score);
   players.forEach((player) => {
     const playerElement = document.createElement("div");
-    playerElement.textContent = `player ${player.name}: ${player.score}`;
+    playerElement.textContent = `${player.name}: ${player.score} score | ${player.kill} kill`;
     leaderboard.appendChild(playerElement);
   });
 }
