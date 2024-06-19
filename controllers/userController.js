@@ -23,9 +23,9 @@ exports.signup = async (req, res) => {
       thumbnail: null,
     };
 
-    const existingUser = await await getUser(name);
+    const existingUser = await getUser(name);
     if (existingUser) {
-      res.status(403).json({ error: "玩家名已存在" });
+      res.status(403).json({ error: "玩家名或信箱已被註冊" });
       return;
     }
 
@@ -51,6 +51,7 @@ exports.signup = async (req, res) => {
         },
       });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "sign up failed" });
   }
 };
