@@ -37,6 +37,10 @@ app.get("/leaderboard", async (req, res) => {
   res.sendFile(path.join(__dirname, "public", "leaderboard.html"));
 });
 
+app.get("/analytics", async (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "analytics.html"));
+});
+
 io.on("connection", (socket) => {
   onConnection(socket);
 });

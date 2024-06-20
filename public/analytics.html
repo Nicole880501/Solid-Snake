@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solid Snake - Analytics</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style/common.css" />
+    <link rel="stylesheet" href="./style/analytics.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Game Analytics</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="circle-box" id="total_score">
+            <h2>Total Score</h2>
+            <p class="stat-value">Loading...</p>
+            <p>Highest Score: Loading...</p>
+            <p>Avg Score: Loading...</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="circle-box" id="total_kill">
+            <h2>Total Kill</h2>
+            <p class="stat-value">Loading...</p>
+            <p>Max Kill: Loading...</p>
+            <p>K/D: Loading...</p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="stats-box" id="total_game">
+        <h2>Total Games</h2>
+        <h3 class="stat-value">Loading...</h3>
+      </div>
+      <hr />
+      <div class="stats-box" id="total_time">
+        <h2>Total Playtime</h2>
+        <h3 class="stat-value">Loading...</h3>
+        <p>Max Playtime: Loading...</p>
+        <p>Avg Playtime: Loading...</p>
+      </div>
+      <hr />
+      <div class="stats-box" id="total_move">
+        <h2>Total Distance</h2>
+        <h3 class="stat-value">Loading...</h3>
+        <p>Max Distance: Loading...</p>
+        <p>Avg Distance: Loading...</p>
+      </div>
+      <hr />
+      <div class="stats-box" id="fav_skin">
+        <h2>Most Used Skin</h2>
+        <h3 class="stat-value">Loading...</h3>
+        <h4 class="stat-value">Loading...</h4>
+      </div>
+    </div>
+    <script src="./js/analytics.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

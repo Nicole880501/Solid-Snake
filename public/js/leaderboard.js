@@ -4,11 +4,11 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
-async function fetchHighestScore(username) {
+async function fetchHighestScore() {
   try {
     const token = getCookie("access_token");
     const response = await fetch("/record/maxScore", {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
