@@ -109,6 +109,7 @@ function movePlayer(player, gameState) {
   player.x = newHead.x;
   player.y = newHead.y;
   player.lastMoveDirection = player.direction;
+  player.totalMoves += 1;
   if (player.grow) {
     player.grow = false;
   } else {

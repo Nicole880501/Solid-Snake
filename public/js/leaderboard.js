@@ -15,7 +15,6 @@ async function fetchHighestScore(username) {
       },
     });
     const data = await response.json();
-    console.log(data);
     document.getElementById(
       "highest-score-title"
     ).innerHTML = `${data.data.name}, Your Highest Score: ${data.data.score}`;
@@ -52,6 +51,7 @@ async function fetchRanking() {
         <td>${players.data[i].player_kill}</td>
         <td>${players.data[i].skin}</td>
         <td>${players.data[i].play_time}'s</td>
+        <td>${players.data[i].total_moves} steps</td>
         <td>${players.data[i].timestamp}</td>
             `;
       rankingTable.appendChild(row);

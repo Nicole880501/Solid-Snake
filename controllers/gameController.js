@@ -48,6 +48,7 @@ function onConnection(socket) {
           accelerated: false,
           cooldown: false,
           score: 0,
+          totalMoves: 0,
           kill: 0,
           color: data.color, // Store player color
         };
@@ -140,6 +141,7 @@ function onConnection(socket) {
           score: player.score,
           play_time: totalConnectionTime,
           player_kill: player.kill,
+          total_moves: player.totalMoves,
         });
         delete gameState.players[socket.id];
       } catch (error) {

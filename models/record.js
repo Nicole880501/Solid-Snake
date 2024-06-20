@@ -56,6 +56,7 @@ exports.getAllPlayerRecord = async () => {
         score,
         play_time,
         player_kill,
+        total_moves,
         timestamp,
         ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY score DESC, player_kill DESC, timestamp DESC) as rn
       FROM
@@ -67,6 +68,7 @@ exports.getAllPlayerRecord = async () => {
       score,
       play_time,
       player_kill,
+      total_moves,
       timestamp
     FROM
       RankedRecords
@@ -83,7 +85,6 @@ exports.getAllPlayerRecord = async () => {
       ...row,
       timestamp: format(new Date(row.timestamp), "yyyy-MM-dd HH:mm:ss"),
     }));
-    console.log(formattedTime);
     return formattedTime;
   } catch (error) {
     console.error("Error fetching highest score:", error);
