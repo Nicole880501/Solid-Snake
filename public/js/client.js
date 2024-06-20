@@ -19,10 +19,10 @@ socket.on("gameState", (state) => {
 });
 
 socket.on("death", () => {
+  socket.disconnect();
   if (confirm("You died ! try again ?") === true) {
     window.location.href = "/game";
   } else {
-    socket.disconnect();
     window.location.href = "/leaderboard";
   }
 });
