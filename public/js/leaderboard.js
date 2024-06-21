@@ -1,34 +1,34 @@
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
+function getCookie (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
-async function fetchHighestScore() {
+async function fetchHighestScore () {
   try {
-    const token = getCookie("access_token");
-    const response = await fetch("/record/maxScore", {
-      method: "GET",
+    const token = getCookie('access_token')
+    const response = await fetch('/record/maxScore', {
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const data = await response.json()
     document.getElementById(
-      "highest-score-title"
-    ).innerHTML = `${data.data.name}, Your Highest Score: ${data.data.score}`;
+      'highest-score-title'
+    ).innerHTML = `${data.data.name}, Your Highest Score: ${data.data.score}`
   } catch (error) {
-    console.error("Error fetching highest score:", error);
+    console.error('Error fetching highest score:', error)
   }
 }
 
-async function fetchRanking() {
+async function fetchRanking () {
   try {
-    const response = await fetch("/record/ranking");
-    const players = await response.json();
-    const rankingTable = document.getElementById("ranking_table");
-    rankingTable.innerHTML = "";
+    const response = await fetch('/record/ranking')
+    const players = await response.json()
+    const rankingTable = document.getElementById('ranking_table')
+    rankingTable.innerHTML = ''
 
     // players.data.forEach((player) => {
     //   const row = document.createElement("tr");
@@ -43,7 +43,7 @@ async function fetchRanking() {
     // });
 
     for (let i = 0; i < players.data.length; i++) {
-      const row = document.createElement("tr");
+      const row = document.createElement('tr')
       row.innerHTML = `
         <td>${i + 1}</td>
         <td>${players.data[i].user_name}</td>
@@ -53,15 +53,15 @@ async function fetchRanking() {
         <td>${players.data[i].play_time}'s</td>
         <td>${players.data[i].total_moves} steps</td>
         <td>${players.data[i].timestamp}</td>
-            `;
-      rankingTable.appendChild(row);
+            `
+      rankingTable.appendChild(row)
     }
   } catch (error) {
-    console.error("Error fetch ranking:", error);
+    console.error('Error fetch ranking:', error)
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetchHighestScore();
-  fetchRanking();
-});
+document.addEventListener('DOMContentLoaded', () => {
+  fetchHighestScore()
+  fetchRanking()
+})
