@@ -1,7 +1,10 @@
 const router = require('express').Router()
 const {
   getPersonalMaxScore,
-  getRanking,
+  sortScoreRanking,
+  sortKillRanking,
+  sortTimeRanking,
+  sortMoveRanking,
   getPlayerScore,
   getPlayerKill,
   getPlayerGame,
@@ -12,7 +15,13 @@ const {
 
 router.get('/maxScore', getPersonalMaxScore)
 
-router.get('/ranking', getRanking)
+router.get('/scoreRanking', sortScoreRanking)
+
+router.get('/killRanking', sortKillRanking)
+
+router.get('/timeRanking', sortTimeRanking)
+
+router.get('/moveRanking', sortMoveRanking)
 
 router.get('/playerScore', getPlayerScore)
 

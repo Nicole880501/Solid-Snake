@@ -17,9 +17,15 @@
   </head>
   <body>
     <div class="container">
-      <h1 id="highest-score-title">Loading...</h1>
+      <h1 id="highest-title">Loading...</h1>
       <hr />
       <h2>World Rankings</h2>
+      <div class="btn-group" role="group" aria-label="Ranking Type">
+        <button type="button" class="btn btn-primary" onclick="fetchRanking('score')">Score</button>
+        <button type="button" class="btn btn-primary" onclick="fetchRanking('kill')">Kill</button>
+        <button type="button" class="btn btn-primary" onclick="fetchRanking('time')">Time</button>
+        <button type="button" class="btn btn-primary" onclick="fetchRanking('moves')">Moves</button>
+      </div>
       <table class="table table-dark table-striped">
         <thead>
           <tr>

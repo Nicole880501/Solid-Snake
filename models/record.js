@@ -47,7 +47,7 @@ exports.getPersonalRecord = async (userName) => {
   }
 }
 
-exports.getAllPlayerRecord = async () => {
+exports.sortAllPlayerScore = async () => {
   const query = `
     WITH RankedRecords AS (
       SELECT
@@ -77,6 +77,141 @@ exports.getAllPlayerRecord = async () => {
     ORDER BY
       score DESC, player_kill DESC, timestamp DESC;
   `
+
+  try {
+    const [rows] = await pool.query(query)
+
+    const formattedTime = rows.map((row) => ({
+      ...row,
+      timestamp: format(new Date(row.timestamp), 'yyyy-MM-dd HH:mm:ss')
+    }))
+    return formattedTime
+  } catch (error) {
+    console.error('Error fetching highest score:', error)
+    throw error
+  }
+}
+
+exports.sortAllPlayerKill = async () => {
+  const query = `
+  WITH RankedRecords AS (
+    SELECT
+      user_name,
+      skin,
+      score,
+      play_time,
+      player_kill,
+      total_moves,
+      timestamp,
+      ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY player_kill DESC, score DESC, timestamp DESC) as rn
+    FROM
+    Records
+  )
+  SELECT
+    user_name,
+    skin,
+    score,
+    play_time,
+    player_kill,
+    total_moves,
+    timestamp
+  FROM
+    RankedRecords
+  WHERE
+    rn = 1
+  ORDER BY
+    player_kill DESC, score DESC, timestamp DESC;
+`
+
+  try {
+    const [rows] = await pool.query(query)
+
+    const formattedTime = rows.map((row) => ({
+      ...row,
+      timestamp: format(new Date(row.timestamp), 'yyyy-MM-dd HH:mm:ss')
+    }))
+    return formattedTime
+  } catch (error) {
+    console.error('Error fetching highest score:', error)
+    throw error
+  }
+}
+
+exports.sortAllPlayerTime = async () => {
+  const query = `
+  WITH RankedRecords AS (
+    SELECT
+      user_name,
+      skin,
+      score,
+      play_time,
+      player_kill,
+      total_moves,
+      timestamp,
+      ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY play_time DESC, score DESC, timestamp DESC) as rn
+    FROM
+    Records
+  )
+  SELECT
+    user_name,
+    skin,
+    score,
+    play_time,
+    player_kill,
+    total_moves,
+    timestamp
+  FROM
+    RankedRecords
+  WHERE
+    rn = 1
+  ORDER BY
+    play_time DESC, score DESC, timestamp DESC;
+`
+
+  try {
+    const [rows] = await pool.query(query)
+
+    const formattedTime = rows.map((row) => ({
+      ...row,
+      timestamp: format(new Date(row.timestamp), 'yyyy-MM-dd HH:mm:ss')
+    }))
+    return formattedTime
+  } catch (error) {
+    console.error('Error fetching highest score:', error)
+    throw error
+  }
+}
+
+exports.sortAllPlayerMove = async () => {
+  const query = `
+  WITH RankedRecords AS (
+    SELECT
+      user_name,
+      skin,
+      score,
+      play_time,
+      player_kill,
+      total_moves,
+      timestamp,
+      ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY total_moves DESC, score DESC, timestamp DESC) as rn
+    FROM
+    Records
+  )
+  SELECT
+    user_name,
+    skin,
+    score,
+    play_time,
+    player_kill,
+    total_moves,
+    timestamp
+  FROM
+    RankedRecords
+  WHERE
+    rn = 1
+  ORDER BY
+    total_moves DESC, score DESC, timestamp DESC;
+`
 
   try {
     const [rows] = await pool.query(query)

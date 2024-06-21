@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken')
 const {
   getPersonalRecord,
-  getAllPlayerRecord,
+  sortAllPlayerScore,
+  sortAllPlayerKill,
+  sortAllPlayerTime,
+  sortAllPlayerMove,
   getAllScore,
   getAllKill,
   getAllGame,
@@ -29,9 +32,63 @@ exports.getPersonalMaxScore = async (req, res) => {
   }
 }
 
-exports.getRanking = async (req, res) => {
+exports.sortScoreRanking = async (req, res) => {
   try {
-    const ranking = await getAllPlayerRecord()
+    const ranking = await sortAllPlayerScore()
+
+    const playerData = []
+
+    ranking.map((data) => {
+      return playerData.push(data)
+    })
+
+    res.status(200).json({
+      data: playerData
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.sortKillRanking = async (req, res) => {
+  try {
+    const ranking = await sortAllPlayerKill()
+
+    const playerData = []
+
+    ranking.map((data) => {
+      return playerData.push(data)
+    })
+
+    res.status(200).json({
+      data: playerData
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.sortTimeRanking = async (req, res) => {
+  try {
+    const ranking = await sortAllPlayerTime()
+
+    const playerData = []
+
+    ranking.map((data) => {
+      return playerData.push(data)
+    })
+
+    res.status(200).json({
+      data: playerData
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.sortMoveRanking = async (req, res) => {
+  try {
+    const ranking = await sortAllPlayerMove()
 
     const playerData = []
 
@@ -125,11 +182,11 @@ exports.getPlayerTime = async (req, res) => {
 
 exports.getPlayerMove = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.verify(token, process.env.JWT_KEY)
-    const username = decoded.name
+    // const token = req.headers.authorization.split(' ')[1]
+    // const decoded = jwt.verify(token, process.env.JWT_KEY)
+    // const username = decoded.name
 
-    const userRecord = await getAllMove(username)
+    const userRecord = await getAllMove('e055339')
 
     if (userRecord) {
       res.status(200).json(userRecord)
