@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
 const {
   getPersonalRecord,
   getAllPlayerRecord,
@@ -7,156 +7,156 @@ const {
   getAllGame,
   getAllTime,
   getAllMove,
-  getMostUsedSkin,
-} = require("../models/record");
+  getMostUsedSkin
+} = require('../models/record')
 
 exports.getPersonalMaxScore = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getPersonalRecord(username);
+    const userRecord = await getPersonalRecord(username)
 
     res.status(200).json({
       data: {
         name: userRecord.user_name,
-        score: userRecord.score,
-      },
-    });
+        score: userRecord.score
+      }
+    })
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
-};
+}
 
 exports.getRanking = async (req, res) => {
   try {
-    const ranking = await getAllPlayerRecord();
+    const ranking = await getAllPlayerRecord()
 
-    const playerData = [];
+    const playerData = []
 
     ranking.map((data) => {
-      playerData.push(data);
-    });
+      return playerData.push(data)
+    })
 
     res.status(200).json({
-      data: playerData,
-    });
+      data: playerData
+    })
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
-};
+}
 
 exports.getPlayerScore = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getAllScore(username);
+    const userRecord = await getAllScore(username)
 
     if (userRecord) {
-      res.status(200).json(userRecord);
+      res.status(200).json(userRecord)
     } else {
-      res.status(404).json({ message: "player not found" });
+      res.status(404).json({ message: 'player not found' })
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
-};
+}
 
 exports.getPlayerKill = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getAllKill(username);
+    const userRecord = await getAllKill(username)
 
     if (userRecord) {
-      res.status(200).json(userRecord);
+      res.status(200).json(userRecord)
     } else {
-      res.status(404).json({ message: "player not found" });
+      res.status(404).json({ message: 'player not found' })
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
-};
+}
 
 exports.getPlayerGame = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getAllGame(username);
+    const userRecord = await getAllGame(username)
 
     if (userRecord) {
-      res.status(200).json(userRecord);
+      res.status(200).json(userRecord)
     } else {
-      res.status(404).json({ message: "player not found" });
+      res.status(404).json({ message: 'player not found' })
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
-};
+}
 
 exports.getPlayerTime = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getAllTime(username);
+    const userRecord = await getAllTime(username)
 
     if (userRecord) {
-      res.status(200).json(userRecord);
+      res.status(200).json(userRecord)
     } else {
-      res.status(404).json({ message: "player not found" });
+      res.status(404).json({ message: 'player not found' })
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
-};
+}
 
 exports.getPlayerMove = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getAllMove(username);
+    const userRecord = await getAllMove(username)
 
     if (userRecord) {
-      res.status(200).json(userRecord);
+      res.status(200).json(userRecord)
     } else {
-      res.status(404).json({ message: "player not found" });
+      res.status(404).json({ message: 'player not found' })
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
-};
+}
 
 exports.getPlayerSkin = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const username = decoded.name;
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getMostUsedSkin(username);
+    const userRecord = await getMostUsedSkin(username)
 
     if (userRecord) {
-      res.status(200).json(userRecord);
+      res.status(200).json(userRecord)
     } else {
-      res.status(404).json({ message: "player not found" });
+      res.status(404).json({ message: 'player not found' })
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
-};
+}

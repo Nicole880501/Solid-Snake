@@ -1,37 +1,37 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
 const {
   gameState,
   generateFruit,
   generateRainbowFruit,
   movePlayer,
   checkCollision,
-  checkHeadCollision,
-} = require("../models/game");
-const { getUser } = require("../models/user");
-const { createRecord } = require("../models/record");
+  checkHeadCollision
+} = require('../models/game')
+const { getUser } = require('../models/user')
+const { createRecord } = require('../models/record')
 
-const INITIAL_SNAKE_LENGTH = 4;
-const DEFAULT_INTERVAL = 100;
-const ACCELERATED_INTERVAL = 50;
-const ACCELERATE_DURATION = 3000;
-const COOLDOWN_DURATION = 20000;
+const INITIAL_SNAKE_LENGTH = 4
+const DEFAULT_INTERVAL = 100
+const ACCELERATED_INTERVAL = 50
+const ACCELERATE_DURATION = 3000
+const COOLDOWN_DURATION = 20000
 
-function onConnection(socket) {
-  console.log("New player connected:", socket.id);
-  let onConnectionTime;
+function onConnection (socket) {
+  console.log('New player connected:', socket.id)
+  let onConnectionTime
 
-  socket.on("startGame", async (data) => {
+  socket.on('startGame', async (data) => {
     try {
-      onConnectionTime = Date.now();
-      const decoded = jwt.verify(data.token, process.env.JWT_KEY);
-      const user = await getUser(decoded.name);
+      onConnectionTime = Date.now()
+      const decoded = jwt.verify(data.token, process.env.JWT_KEY)
+      const user = await getUser(decoded.name)
 
       if (user) {
-        const initialX = Math.floor(Math.random() * 80);
-        const initialY = Math.floor(Math.random() * 40);
-        const initialSnake = [];
+        const initialX = Math.floor(Math.random() * 80)
+        const initialY = Math.floor(Math.random() * 40)
+        const initialSnake = []
         for (let i = 0; i < INITIAL_SNAKE_LENGTH; i++) {
-          initialSnake.push({ x: initialX, y: initialY });
+          initialSnake.push({ x: initialX, y: initialY })
         }
 
         gameState.players[socket.id] = {
@@ -39,8 +39,8 @@ function onConnection(socket) {
           name: user.name,
           x: initialX,
           y: initialY,
-          direction: "right",
-          lastMoveDirection: "right",
+          direction: 'right',
+          lastMoveDirection: 'right',
           snake: initialSnake,
           grow: false,
           invincible: true,
@@ -50,89 +50,89 @@ function onConnection(socket) {
           score: 0,
           totalMoves: 0,
           kill: 0,
-          color: data.color, // Store player color
-        };
+          color: data.color // Store player color
+        }
 
         if (gameState.fruits.length === 0) {
           for (let i = 0; i < 10; i++) {
-            gameState.fruits.push(generateFruit());
+            gameState.fruits.push(generateFruit())
           }
         }
         if (gameState.badFruits.length === 0) {
-          gameState.badFruits.push(generateFruit());
+          gameState.badFruits.push(generateFruit())
         }
         if (gameState.trapFruits.length === 0) {
           for (let i = 0; i < 10; i++) {
-            gameState.trapFruits.push(generateFruit());
+            gameState.trapFruits.push(generateFruit())
           }
         }
         if (gameState.rainbowFruits.length === 0) {
-          generateRainbowFruit();
+          generateRainbowFruit()
         }
 
         setTimeout(() => {
           if (gameState.players[socket.id]) {
-            gameState.players[socket.id].invincible = false;
+            gameState.players[socket.id].invincible = false
           }
-        }, 3000);
+        }, 3000)
       }
     } catch (err) {
-      console.error("JWT verification failed:", err);
+      console.error('JWT verification failed:', err)
     }
-  });
+  })
 
-  socket.on("changeDirection", async (newDirection) => {
+  socket.on('changeDirection', async (newDirection) => {
     try {
-      const player = gameState.players[socket.id];
-      const currentDirection = player.direction;
+      const player = gameState.players[socket.id]
+      const currentDirection = player.direction
       if (
-        (newDirection === "left" &&
-          currentDirection !== "right" &&
-          player.lastMoveDirection !== "right") ||
-        (newDirection === "right" &&
-          currentDirection !== "left" &&
-          player.lastMoveDirection !== "left") ||
-        (newDirection === "up" &&
-          currentDirection !== "down" &&
-          player.lastMoveDirection !== "down") ||
-        (newDirection === "down" &&
-          currentDirection !== "up" &&
-          player.lastMoveDirection !== "up")
+        (newDirection === 'left' &&
+          currentDirection !== 'right' &&
+          player.lastMoveDirection !== 'right') ||
+        (newDirection === 'right' &&
+          currentDirection !== 'left' &&
+          player.lastMoveDirection !== 'left') ||
+        (newDirection === 'up' &&
+          currentDirection !== 'down' &&
+          player.lastMoveDirection !== 'down') ||
+        (newDirection === 'down' &&
+          currentDirection !== 'up' &&
+          player.lastMoveDirection !== 'up')
       ) {
-        gameState.players[socket.id].direction = newDirection;
+        gameState.players[socket.id].direction = newDirection
       }
     } catch (error) {
-      console.error("plz press start game:", error);
+      console.error('plz press start game:', error)
     }
-  });
+  })
 
-  socket.on("setSpeed", async () => {
+  socket.on('setSpeed', async () => {
     try {
-      const player = gameState.players[socket.id];
+      const player = gameState.players[socket.id]
       if (!player.cooldown) {
-        player.accelerated = true;
-        player.interval = ACCELERATED_INTERVAL;
+        player.accelerated = true
+        player.interval = ACCELERATED_INTERVAL
 
         setTimeout(() => {
-          player.accelerated = false;
-          player.interval = DEFAULT_INTERVAL;
-          player.cooldown = true;
+          player.accelerated = false
+          player.interval = DEFAULT_INTERVAL
+          player.cooldown = true
 
           setTimeout(() => {
-            player.cooldown = false;
-          }, COOLDOWN_DURATION);
-        }, ACCELERATE_DURATION);
+            player.cooldown = false
+          }, COOLDOWN_DURATION)
+        }, ACCELERATE_DURATION)
       }
     } catch (error) {
-      console.log("something wrong:", error);
+      console.log('something wrong:', error)
     }
-  });
+  })
 
-  socket.on("disconnect", async () => {
-    const disconnectTime = Date.now();
-    const totalConnectionTime = (disconnectTime - onConnectionTime) / 1000;
-    console.log("Player disconnected:", socket.id);
-    const player = gameState.players[socket.id];
+  socket.on('disconnect', async () => {
+    const disconnectTime = Date.now()
+    const totalConnectionTime = (disconnectTime - onConnectionTime) / 1000
+    console.log('Player disconnected:', socket.id)
+    const player = gameState.players[socket.id]
     if (player) {
       try {
         await createRecord({
@@ -141,111 +141,111 @@ function onConnection(socket) {
           score: player.score,
           play_time: totalConnectionTime,
           player_kill: player.kill,
-          total_moves: player.totalMoves,
-        });
-        delete gameState.players[socket.id];
+          total_moves: player.totalMoves
+        })
+        delete gameState.players[socket.id]
       } catch (error) {
-        console.log("failed to create record:", error);
+        console.log('failed to create record:', error)
       }
     }
-  });
+  })
 }
 
-async function handlePlayerDeath(playerId) {
-  const player = gameState.players[playerId];
+async function handlePlayerDeath (playerId) {
+  const player = gameState.players[playerId]
   if (player) {
     try {
       await createRecord({
         user_name: player.name,
         skin: player.color,
-        score: player.score,
-      });
-      delete gameState.players[playerId];
+        score: player.score
+      })
+      delete gameState.players[playerId]
     } catch (error) {
-      console.log("failed to create record:", error);
+      console.log('failed to create record:', error)
     }
   }
 }
 
-function gameLoop(io) {
-  const playersToRemove = [];
-  const headCollisions = [];
-  for (let playerId in gameState.players) {
-    let player = gameState.players[playerId];
+function gameLoop (io) {
+  const playersToRemove = []
+  const headCollisions = []
+  for (const playerId in gameState.players) {
+    const player = gameState.players[playerId]
 
-    const now = Date.now();
+    const now = Date.now()
     if (!player.lastMove || now - player.lastMove >= player.interval) {
-      const alive = movePlayer(player, gameState);
-      player.lastMove = now;
+      const alive = movePlayer(player, gameState)
+      player.lastMove = now
 
       if (!alive) {
-        playersToRemove.push(playerId);
-        io.to(playerId).emit("death");
+        playersToRemove.push(playerId)
+        io.to(playerId).emit('death')
       } else {
         gameState.fruits.forEach((fruit, index) => {
           if (checkCollision(player, fruit)) {
-            player.grow = true;
-            player.score += 10;
-            gameState.fruits.splice(index, 1);
-            gameState.fruits.push(generateFruit());
+            player.grow = true
+            player.score += 10
+            gameState.fruits.splice(index, 1)
+            gameState.fruits.push(generateFruit())
           }
-        });
+        })
 
         gameState.badFruits.forEach((badFruit, index) => {
           if (checkCollision(player, badFruit)) {
             if (player.snake.length > 1) {
-              player.snake.pop();
-              player.score -= 10;
+              player.snake.pop()
+              player.score -= 10
             }
-            gameState.badFruits.splice(index, 1);
-            gameState.badFruits.push(generateFruit());
+            gameState.badFruits.splice(index, 1)
+            gameState.badFruits.push(generateFruit())
           }
-        });
+        })
 
         gameState.rainbowFruits.forEach((rainbowFruit, index) => {
           if (checkCollision(player, rainbowFruit)) {
-            player.grow = true;
-            player.score += 50;
+            player.grow = true
+            player.score += 50
 
             for (let i = 0; i < 5; i++) {
-              player.snake.push({ ...player.snake[player.snake.length - 1] });
+              player.snake.push({ ...player.snake[player.snake.length - 1] })
             }
-            gameState.rainbowFruits.splice(index, 1);
+            gameState.rainbowFruits.splice(index, 1)
           }
-        });
+        })
 
         gameState.trapFruits.forEach((trapFruits) => {
           if (checkCollision(player, trapFruits)) {
-            playersToRemove.push(playerId);
-            io.to(playerId).emit("death");
+            playersToRemove.push(playerId)
+            io.to(playerId).emit('death')
           }
-        });
+        })
       }
     }
   }
   // Check head collisions after all moves
-  for (let playerId in gameState.players) {
-    let player = gameState.players[playerId];
+  for (const playerId in gameState.players) {
+    const player = gameState.players[playerId]
     if (checkHeadCollision(player, gameState)) {
-      headCollisions.push(playerId);
+      headCollisions.push(playerId)
     }
   }
 
   headCollisions.forEach((playerId) => {
-    playersToRemove.push(playerId);
-    io.to(playerId).emit("death");
-  });
+    playersToRemove.push(playerId)
+    io.to(playerId).emit('death')
+  })
 
   setTimeout(() => {
     playersToRemove.forEach((playerId) => {
-      handlePlayerDeath(playerId);
-    });
-  }, 1000);
+      handlePlayerDeath(playerId)
+    })
+  }, 1000)
 
-  io.sockets.emit("gameState", gameState);
+  io.sockets.emit('gameState', gameState)
 }
 
 module.exports = {
   onConnection,
-  gameLoop,
-};
+  gameLoop
+}

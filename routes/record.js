@@ -1,4 +1,4 @@
-const router = require("express").Router();
+const router = require('express').Router()
 const {
   getPersonalMaxScore,
   getRanking,
@@ -7,23 +7,23 @@ const {
   getPlayerGame,
   getPlayerTime,
   getPlayerMove,
-  getPlayerSkin,
-} = require("../controllers/recordController");
+  getPlayerSkin
+} = require('../controllers/recordController')
 
-router.get("/maxScore", getPersonalMaxScore);
+router.get('/maxScore', getPersonalMaxScore)
 
-router.get("/ranking", getRanking);
+router.get('/ranking', getRanking)
 
-router.get("/playerScore", getPlayerScore);
+router.get('/playerScore', getPlayerScore)
 
-router.get("/playerKill", getPlayerKill);
+router.get('/playerKill', getPlayerKill)
 
-router.get("/playerGame", getPlayerGame);
+router.get('/playerGame', getPlayerGame)
 
-router.get("/playerTime", getPlayerTime);
+router.get('/playerTime', getPlayerTime)
 
-router.get("/playerMove", getPlayerMove);
+router.get('/playerMove', getPlayerMove)
 
-router.get("/playerSkin", getPlayerSkin);
+router.get('/playerSkin', getPlayerSkin)
 
-module.exports = router;
+module.exports = router

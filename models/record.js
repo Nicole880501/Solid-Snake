@@ -1,20 +1,20 @@
-const mysql = require("mysql2/promise");
-const { format } = require("date-fns");
-const dotenv = require("dotenv");
+const mysql = require('mysql2/promise')
+const { format } = require('date-fns')
+const dotenv = require('dotenv')
 
-dotenv.config();
+dotenv.config()
 
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-});
+  database: process.env.MYSQL_DATABASE
+})
 
 exports.createRecord = async (data) => {
-  const result = pool.query("INSERT INTO Records SET ?", data);
-  return result;
-};
+  const result = pool.query('INSERT INTO Records SET ?', data)
+  return result
+}
 
 exports.getPersonalRecord = async (userName) => {
   const query = `
@@ -36,16 +36,16 @@ exports.getPersonalRecord = async (userName) => {
         GROUP BY 
             user_name
     ) r2 ON r1.user_name = r2.user_name AND r1.score = r2.max_score;
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query, [userName]);
-    return rows[0];
+    const [rows] = await pool.query(query, [userName])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching score records:", error);
-    throw error;
+    console.error('Error fetching score records:', error)
+    throw error
   }
-};
+}
 
 exports.getAllPlayerRecord = async () => {
   const query = `
@@ -76,21 +76,21 @@ exports.getAllPlayerRecord = async () => {
       rn = 1
     ORDER BY
       score DESC, player_kill DESC, timestamp DESC;
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query);
+    const [rows] = await pool.query(query)
 
     const formattedTime = rows.map((row) => ({
       ...row,
-      timestamp: format(new Date(row.timestamp), "yyyy-MM-dd HH:mm:ss"),
-    }));
-    return formattedTime;
+      timestamp: format(new Date(row.timestamp), 'yyyy-MM-dd HH:mm:ss')
+    }))
+    return formattedTime
   } catch (error) {
-    console.error("Error fetching highest score:", error);
-    throw error;
+    console.error('Error fetching highest score:', error)
+    throw error
   }
-};
+}
 
 exports.getAllScore = async (username) => {
   const query = `
@@ -104,16 +104,16 @@ exports.getAllScore = async (username) => {
     user_name = ?
   GROUP BY
     user_name
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query, [username]);
-    return rows[0];
+    const [rows] = await pool.query(query, [username])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching highest score:", error);
-    throw error;
+    console.error('Error fetching highest score:', error)
+    throw error
   }
-};
+}
 
 exports.getAllKill = async (username) => {
   const query = `
@@ -127,16 +127,16 @@ exports.getAllKill = async (username) => {
     user_name = ?
   GROUP BY
     user_name
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query, [username]);
-    return rows[0];
+    const [rows] = await pool.query(query, [username])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching kill records:", error);
-    throw error;
+    console.error('Error fetching kill records:', error)
+    throw error
   }
-};
+}
 
 exports.getAllGame = async (username) => {
   const query = `
@@ -146,16 +146,16 @@ exports.getAllGame = async (username) => {
     Records
   WHERE
     user_name = ?
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query, [username]);
-    return rows[0];
+    const [rows] = await pool.query(query, [username])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching game records:", error);
-    throw error;
+    console.error('Error fetching game records:', error)
+    throw error
   }
-};
+}
 
 exports.getAllTime = async (username) => {
   const query = `
@@ -169,16 +169,16 @@ exports.getAllTime = async (username) => {
     user_name = ?
   GROUP BY
     user_name
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query, [username]);
-    return rows[0];
+    const [rows] = await pool.query(query, [username])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching time records:", error);
-    throw error;
+    console.error('Error fetching time records:', error)
+    throw error
   }
-};
+}
 
 exports.getAllMove = async (username) => {
   const query = `
@@ -192,16 +192,16 @@ exports.getAllMove = async (username) => {
     user_name = ?
   GROUP BY
     user_name
-  `;
+  `
 
   try {
-    const [rows] = await pool.query(query, [username]);
-    return rows[0];
+    const [rows] = await pool.query(query, [username])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching move records:", error);
-    throw error;
+    console.error('Error fetching move records:', error)
+    throw error
   }
-};
+}
 
 exports.getMostUsedSkin = async (username) => {
   const query = `
@@ -223,12 +223,12 @@ SELECT r1.user_name, r1.skin, r1.skin_count
     ON r1.user_name = r2.user_name AND r1.skin_count = r2.max_skin_count
     WHERE r1.user_name = ?
     LIMIT 1;
-  `;
+  `
   try {
-    const [rows] = await pool.query(query, [username]);
-    return rows[0];
+    const [rows] = await pool.query(query, [username])
+    return rows[0]
   } catch (error) {
-    console.error("Error fetching skin record:", error);
-    throw error;
+    console.error('Error fetching skin record:', error)
+    throw error
   }
-};
+}
