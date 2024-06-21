@@ -182,11 +182,11 @@ exports.getPlayerTime = async (req, res) => {
 
 exports.getPlayerMove = async (req, res) => {
   try {
-    // const token = req.headers.authorization.split(' ')[1]
-    // const decoded = jwt.verify(token, process.env.JWT_KEY)
-    // const username = decoded.name
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
 
-    const userRecord = await getAllMove('e055339')
+    const userRecord = await getAllMove(username)
 
     if (userRecord) {
       res.status(200).json(userRecord)
