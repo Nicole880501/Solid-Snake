@@ -1,7 +1,7 @@
 const express = require('express')
 const http = require('http')
 const socketIo = require('socket.io')
-const { onConnection, gameLoop } = require('./controllers/gameController')
+const { onConnection, gameLoop, startWeatherCycle } = require('./controllers/gameController')
 const { errorHandler, socketErrorHandler } = require('./utils/errorHandler')
 
 const app = express()
@@ -42,12 +42,14 @@ app.get('/analytics', async (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  onConnection(socket)
+  onConnection(socket, io)
 })
 
 setInterval(() => {
   gameLoop(io)
 }, 10)
+
+startWeatherCycle(io)
 
 app.use(errorHandler)
 

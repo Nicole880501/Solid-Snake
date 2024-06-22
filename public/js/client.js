@@ -6,6 +6,9 @@ const ctx = canvas.getContext('2d')
 const scale = 20
 
 let gameState = {}
+let weather = 'sunny'
+let particles = []
+let previousWeather = null
 
 document.getElementById('startButton').addEventListener('click', () => {
   const token = getCookie('access_token')
@@ -16,6 +19,11 @@ document.getElementById('startButton').addEventListener('click', () => {
 socket.on('gameState', (state) => {
   gameState = state
   draw()
+})
+
+socket.on('weatherChange', (newWeather) => {
+  weather = newWeather
+  initParticles()
 })
 
 socket.on('death', () => {
@@ -51,6 +59,60 @@ function getCookie (name) {
   const value = `; ${document.cookie}`
   const parts = value.split(`; ${name}=`)
   if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+function initParticles () {
+  if (previousWeather) {
+    // 将前一个天气的粒子保留在数组中
+    particles = particles.filter(p => p.weather === previousWeather)
+  } else {
+    particles = []
+  }
+
+  if (weather === 'rainy') {
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -Math.random() * canvas.height, // 从画布上方生成
+        speedY: Math.random() * 2 + 1,
+        length: Math.random() * 10 + 10,
+        weather: 'rainy'
+      })
+    }
+  } else if (weather === 'snowy') {
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -Math.random() * canvas.height, // 从画布上方生成
+        speedY: Math.random() * 1 + 0.5,
+        radius: Math.random() * 2 + 1,
+        weather: 'snowy'
+      })
+    }
+  }
+  previousWeather = weather
+}
+
+function drawParticles () {
+  particles = particles.filter(p => p.y <= canvas.height) // 移除超出画布底部的粒子
+
+  particles.forEach(particle => {
+    if (particle.weather === 'rainy') {
+      ctx.strokeStyle = 'blue'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(particle.x, particle.y)
+      ctx.lineTo(particle.x, particle.y + particle.length)
+      ctx.stroke()
+      particle.y += particle.speedY
+    } else if (particle.weather === 'snowy') {
+      ctx.fillStyle = 'white'
+      ctx.beginPath()
+      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
+      ctx.fill()
+      particle.y += particle.speedY
+    }
+  })
 }
 
 function drawPlayer () {
@@ -148,6 +210,7 @@ function drawLeaderboard () {
 
 function draw () {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
+  drawParticles()
   drawPlayer()
   drawFruits()
   drawBadFruits()

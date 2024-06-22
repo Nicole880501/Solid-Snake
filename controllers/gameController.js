@@ -15,8 +15,11 @@ const DEFAULT_INTERVAL = 100
 const ACCELERATED_INTERVAL = 50
 const ACCELERATE_DURATION = 3000
 const COOLDOWN_DURATION = 20000
+const WEATHER_DURATION = 20000
 
-function onConnection (socket) {
+const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
+
+function onConnection (socket, io) {
   console.log('New player connected:', socket.id)
   let onConnectionTime
 
@@ -69,6 +72,8 @@ function onConnection (socket) {
         if (gameState.rainbowFruits.length === 0) {
           generateRainbowFruit()
         }
+
+        gameState.weather = WEATHER_TYPES[Math.floor(Math.random() * WEATHER_TYPES.length)]
 
         setTimeout(() => {
           if (gameState.players[socket.id]) {
@@ -167,6 +172,16 @@ async function handlePlayerDeath (playerId) {
   }
 }
 
+function startWeatherCycle (io) {
+  let currentWeatherIndex = 0
+
+  setInterval(() => {
+    gameState.weather = WEATHER_TYPES[currentWeatherIndex]
+    io.sockets.emit('weatherChange', gameState.weather)
+    currentWeatherIndex = (currentWeatherIndex + 1) % WEATHER_TYPES.length
+  }, WEATHER_DURATION)
+}
+
 function gameLoop (io) {
   const playersToRemove = []
   const headCollisions = []
@@ -223,6 +238,7 @@ function gameLoop (io) {
       }
     }
   }
+
   // Check head collisions after all moves
   for (const playerId in gameState.players) {
     const player = gameState.players[playerId]
@@ -247,5 +263,6 @@ function gameLoop (io) {
 
 module.exports = {
   onConnection,
-  gameLoop
+  gameLoop,
+  startWeatherCycle
 }
