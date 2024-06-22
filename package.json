@@ -12,6 +12,7 @@
     "bcrypt": "^5.1.1",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "eslint-config-standard": "^17.1.0",
     "express": "^4.19.2",
     "google-auth-library": "^9.11.0",
     "joi": "^17.13.1",
