@@ -70,7 +70,7 @@ function initParticles () {
   }
 
   if (weather === 'rainy') {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: -Math.random() * canvas.height, // 从画布上方生成
@@ -80,7 +80,7 @@ function initParticles () {
       })
     }
   } else if (weather === 'snowy') {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: -Math.random() * canvas.height, // 从画布上方生成
@@ -208,7 +208,15 @@ function drawLeaderboard () {
   })
 }
 
-function draw () {
+let lastUpdateTime = 0
+function draw (timestamp) {
+  const deltaTime = timestamp - lastUpdateTime
+  if (deltaTime < 16) {
+    window.requestAnimationFrame(draw)
+    return
+  }
+  lastUpdateTime = timestamp
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   drawParticles()
   drawPlayer()
@@ -217,4 +225,8 @@ function draw () {
   drawRainbowFruits()
   drawTrapFruits()
   drawLeaderboard()
+
+  window.requestAnimationFrame(draw)
 }
+
+window.requestAnimationFrame(draw)

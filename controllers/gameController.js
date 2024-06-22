@@ -19,7 +19,7 @@ const WEATHER_DURATION = 20000
 
 const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
 
-function onConnection (socket, io) {
+function onConnection (socket) {
   console.log('New player connected:', socket.id)
   let onConnectionTime
 

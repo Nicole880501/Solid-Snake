@@ -42,7 +42,7 @@ app.get('/analytics', async (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  onConnection(socket, io)
+  onConnection(socket)
 })
 
 setInterval(() => {
