@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
 
 setInterval(() => {
   gameLoop(io)
-}, 10)
+}, 50)
 
 startWeatherCycle(io)
 

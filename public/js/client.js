@@ -63,7 +63,6 @@ function getCookie (name) {
 
 function initParticles () {
   if (previousWeather) {
-    // 将前一个天气的粒子保留在数组中
     particles = particles.filter(p => p.weather === previousWeather)
   } else {
     particles = []
@@ -73,7 +72,7 @@ function initParticles () {
     for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
-        y: -Math.random() * canvas.height, // 从画布上方生成
+        y: -Math.random() * canvas.height,
         speedY: Math.random() * 2 + 1,
         length: Math.random() * 10 + 10,
         weather: 'rainy'
@@ -83,7 +82,7 @@ function initParticles () {
     for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
-        y: -Math.random() * canvas.height, // 从画布上方生成
+        y: -Math.random() * canvas.height,
         speedY: Math.random() * 1 + 0.5,
         radius: Math.random() * 2 + 1,
         weather: 'snowy'
@@ -94,7 +93,7 @@ function initParticles () {
 }
 
 function drawParticles () {
-  particles = particles.filter(p => p.y <= canvas.height) // 移除超出画布底部的粒子
+  particles = particles.filter(p => p.y <= canvas.height)
 
   particles.forEach(particle => {
     if (particle.weather === 'rainy') {
