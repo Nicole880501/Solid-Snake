@@ -9,6 +9,7 @@ let gameState = {}
 let weather = 'sunny'
 let particles = []
 let previousWeather = null
+let playerId = null // 新增用于存储当前玩家ID
 
 document.getElementById('startButton').addEventListener('click', () => {
   const token = getCookie('access_token')
@@ -36,6 +37,10 @@ socket.on('death', () => {
   } else {
     window.location.href = '/leaderboard'
   }
+})
+
+socket.on('connect', () => {
+  playerId = socket.id // 存储当前玩家的ID
 })
 
 window.addEventListener('keydown', (event) => {
@@ -121,23 +126,29 @@ function drawPlayer () {
   for (const playerId in gameState.players) {
     const player = gameState.players[playerId]
     if (player.color === 'rainbow') {
-      drawRainbowSnake(player)
+      drawRainbowSnake(player, playerId)
     } else {
-      drawSnake(player)
+      drawSnake(player, playerId)
     }
   }
 }
 
-function drawSnake (player) {
+function drawSnake (player, id) {
   ctx.fillStyle = player.color
   ctx.strokeStyle = 'white'
   player.snake.forEach((segment) => {
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale)
+    if (id === playerId) { // 当前玩家的蛇有特殊的边框颜色
+      ctx.strokeStyle = '#00ff00'
+    } else {
+      ctx.strokeStyle = 'red'
+    }
+    ctx.lineWidth = 2
     ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale)
   })
 }
 
-function drawRainbowSnake (player) {
+function drawRainbowSnake (player, id) {
   const colors = [
     'red',
     'orange',
@@ -150,7 +161,12 @@ function drawRainbowSnake (player) {
   player.snake.forEach((segment, index) => {
     ctx.fillStyle = colors[index % colors.length]
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale)
-    ctx.strokeStyle = 'white'
+    if (id === playerId) { // 当前玩家的蛇有特殊的边框颜色
+      ctx.strokeStyle = '#00ff00'
+    } else {
+      ctx.strokeStyle = 'red'
+    }
+    ctx.lineWidth = 2
     ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale)
   })
 }
