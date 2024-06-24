@@ -24,6 +24,19 @@ async function fetchPersonalHighestRecord (type) {
         document.getElementById(
           'highest-title'
         ).innerHTML = `${data.user_name}, Your Highest Score: ${data.highest_score}`
+      } else if (type === 'level') {
+        const response = await fetch('/user/level', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        console.log(data)
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.name}, Your Level: ${data.level}`
       } else if (type === 'kill') {
         const response = await fetch('/record/playerKill', {
           method: 'GET',
