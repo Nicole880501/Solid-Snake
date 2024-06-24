@@ -72,6 +72,8 @@ async function fetchRanking (type) {
     let url = ''
     if (type === 'score') {
       url = '/record/scoreRanking'
+    } else if (type === 'level') {
+      url = '/record/levelRanking'
     } else if (type === 'kill') {
       url = '/record/killRanking'
     } else if (type === 'time') {
@@ -89,6 +91,7 @@ async function fetchRanking (type) {
       row.innerHTML = `
         <td>${i + 1}</td>
         <td>${players.data[i].user_name}</td>
+        <td>${players.data[i].level}</td>
         <td>${players.data[i].score}</td>
         <td>${players.data[i].player_kill}</td>
         <td>${players.data[i].skin}</td>
