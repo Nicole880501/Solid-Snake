@@ -148,9 +148,28 @@ exports.googleCallback = async (req, res) => {
       expiresIn: EXPIRE_TIME
     })
 
-    res.cookie('access_token', token).status(200).redirect('/match') // 跳轉回前端頁面
+    res.cookie('access_token', token).status(200).redirect('/game') // 跳轉回前端頁面
   } catch (error) {
     console.error(error)
     res.status(400).send('Error fetching Google user info')
+  }
+}
+
+exports.getUserLevel = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    const username = decoded.name
+
+    const userRecord = await getUser(username)
+
+    if (userRecord) {
+      res.status(200).json(userRecord)
+    } else {
+      res.status(404).json({ message: 'player not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
   }
 }

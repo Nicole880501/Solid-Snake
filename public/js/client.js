@@ -12,6 +12,9 @@ let previousWeather = null
 
 document.getElementById('startButton').addEventListener('click', () => {
   const token = getCookie('access_token')
+  if (!token) {
+    window.location.href = '/signin'
+  }
   const playerColor = document.getElementById('color').value
   socket.emit('startGame', { token, color: playerColor })
 })
@@ -202,7 +205,7 @@ function drawLeaderboard () {
   players.sort((a, b) => b.score - a.score)
   players.forEach((player) => {
     const playerElement = document.createElement('div')
-    playerElement.textContent = `${player.name}: ${player.score} score | ${player.kill} kill`
+    playerElement.textContent = `${player.name} | Lv:${player.level} | score:${player.score} | kill:${player.kill}`
     leaderboard.appendChild(playerElement)
   })
 }

@@ -8,55 +8,59 @@ async function fetchPersonalHighestRecord (type) {
   try {
     const token = getCookie('access_token')
 
-    if (type === 'score') {
-      const response = await fetch('/record/playerScore', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      console.log(data)
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Score: ${data.highest_score}`
-    } else if (type === 'kill') {
-      const response = await fetch('/record/playerKill', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Kill: ${data.highest_kill}`
-    } else if (type === 'time') {
-      const response = await fetch('/record/playerTime', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Playtime: ${data.highest_time}'s`
-    } else if (type === 'moves') {
-      const response = await fetch('/record/playerMove', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Moves: ${data.highest_move} steps`
+    if (!token) {
+      document.getElementById('highest-title').innerHTML = 'You Are Not Signin'
+    } else {
+      if (type === 'score') {
+        const response = await fetch('/record/playerScore', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        console.log(data)
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Score: ${data.highest_score}`
+      } else if (type === 'kill') {
+        const response = await fetch('/record/playerKill', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Kill: ${data.highest_kill}`
+      } else if (type === 'time') {
+        const response = await fetch('/record/playerTime', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Playtime: ${data.highest_time}'s`
+      } else if (type === 'moves') {
+        const response = await fetch('/record/playerMove', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Moves: ${data.highest_move} steps`
+      }
     }
   } catch (error) {
     console.error('Error fetching highest score:', error)

@@ -6,7 +6,7 @@ const {
   movePlayer,
   checkHeadCollision
 } = require('../models/game')
-const { getUser } = require('../models/user')
+const { getUser, updateUserLevel } = require('../models/user')
 const { createRecord } = require('../models/record')
 
 const INITIAL_SNAKE_LENGTH = 4
@@ -53,7 +53,9 @@ function onConnection (socket) {
           score: 0,
           totalMoves: 0,
           kill: 0,
-          color: data.color
+          color: data.color,
+          level: user.level,
+          experience: user.experience
         }
 
         // Set player state based on current weather
@@ -124,13 +126,16 @@ function onConnection (socket) {
     const player = gameState.players[socket.id]
     if (player) {
       try {
+        await updateUserLevel(player.name, player.level, player.experience)
         await createRecord({
           user_name: player.name,
           skin: player.color,
           score: player.score,
           play_time: totalConnectionTime,
           player_kill: player.kill,
-          total_moves: player.totalMoves
+          total_moves: player.totalMoves,
+          level: player.level,
+          experience: player.experience
         })
         delete gameState.players[socket.id]
       } catch (error) {
@@ -158,7 +163,9 @@ async function handlePlayerDeath (playerId) {
       await createRecord({
         user_name: player.name,
         skin: player.color,
-        score: player.score
+        score: player.score,
+        level: player.level,
+        experience: player.experience
       })
       delete gameState.players[playerId]
     } catch (error) {
@@ -182,6 +189,7 @@ function startWeatherCycle (io) {
 }
 
 function adjustGameStateForWeather (weather) {
+  gameState.rainbowFruits = []
   if (weather === 'sunny') {
     gameState.fruits = Array(10).fill().map(generateFruit)
     gameState.badFruits = [generateFruit()]
@@ -207,6 +215,29 @@ function adjustGameStateForWeather (weather) {
       player.snake = player.snake.slice(0, 4)
       player.interval = DEFAULT_INTERVAL // Set speed to default during snowy weather
     }
+  }
+}
+
+function calculateLevel (experience) {
+  let level = 1
+  let requiredExperience = 300
+  let totalRequiredExperience = 300
+
+  while (experience >= totalRequiredExperience) {
+    level += 1
+    requiredExperience += 200
+    totalRequiredExperience += requiredExperience
+  }
+
+  return level
+}
+
+function addExperience (player, experience) {
+  player.experience += experience
+  const newLevel = calculateLevel(player.experience)
+  if (newLevel > player.level) {
+    player.level = newLevel
+    console.log(`Player ${player.name} leveled up to ${player.level}`)
   }
 }
 
@@ -252,6 +283,7 @@ function gameLoop (io) {
         if (fruitMap.has(headPos)) {
           player.grow = true
           player.score += 10
+          addExperience(player, 10)
           const fruitIndex = fruitMap.get(headPos)
           gameState.fruits.splice(fruitIndex, 1)
           gameState.fruits.push(generateFruit())
@@ -270,6 +302,7 @@ function gameLoop (io) {
         if (rainbowFruitMap.has(headPos)) {
           player.grow = true
           player.score += 50
+          addExperience(player, 50)
           for (let i = 0; i < 5; i++) {
             player.snake.push({ ...player.snake[player.snake.length - 1] })
           }
@@ -294,6 +327,8 @@ function gameLoop (io) {
   }
 
   headCollisions.forEach((playerId) => {
+    const player = gameState.players[playerId]
+    addExperience(player, 50)
     playersToRemove.push(playerId)
     io.to(playerId).emit('death')
   })

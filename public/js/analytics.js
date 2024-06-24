@@ -134,11 +134,54 @@ async function fetchMostUsedSkin () {
   }
 }
 
+function calculateTotalExperience (level) {
+  let totalExperience = 0
+  for (let i = 1; i < level; i++) {
+    totalExperience += 300 + (i - 1) * 200
+  }
+  return totalExperience
+}
+
+async function fetchPlayerLevel () {
+  try {
+    const token = getCookie('access_token')
+    const response = await fetch('/user/level', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const data = await response.json()
+
+    const currentLevel = data.level
+    const experience = data.experience
+    const nextLevel = currentLevel + 1
+    const totalCurrentLevelExperience = calculateTotalExperience(currentLevel)
+    const totalNextLevelExperience = calculateTotalExperience(nextLevel)
+    const requiredExperience = totalNextLevelExperience - totalCurrentLevelExperience
+    const progressPercentage = ((experience - totalCurrentLevelExperience) / requiredExperience) * 100
+
+    document.querySelector('.current-level').textContent = currentLevel
+    document.querySelector('.next-level').textContent = nextLevel
+    document.querySelector('.progress-bar').style.width = `${progressPercentage}%`
+    document.querySelector('.progress-bar').textContent = `${Math.round(progressPercentage)}%`
+    document.querySelector('.experience').textContent = `${experience}/${totalNextLevelExperience}`
+  } catch (error) {
+    console.error('Error fetching player level:', error)
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  const token = getCookie('access_token')
+  if (!token) {
+    window.location.href = '/signin'
+  }
   fetchTotalScore()
   fetchTotalKill()
   fetchTotalGame()
   fetchTotalTime()
   fetchTotalMove()
   fetchMostUsedSkin()
+  fetchPlayerLevel()
 })
