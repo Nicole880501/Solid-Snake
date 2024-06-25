@@ -58,6 +58,8 @@ exports.sortAllPlayerScore = async () => {
         player_kill,
         total_moves,
         timestamp,
+        level,
+        experience,
         ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY score DESC, player_kill DESC, timestamp DESC) as rn
       FROM
       Records
@@ -69,7 +71,9 @@ exports.sortAllPlayerScore = async () => {
       play_time,
       player_kill,
       total_moves,
-      timestamp
+      timestamp,
+      level,
+      experience
     FROM
       RankedRecords
     WHERE
@@ -92,6 +96,55 @@ exports.sortAllPlayerScore = async () => {
   }
 }
 
+exports.sortAllPlayerLevel = async () => {
+  const query = `
+    WITH RankedRecords AS (
+      SELECT
+        user_name,
+        skin,
+        score,
+        play_time,
+        player_kill,
+        total_moves,
+        timestamp,
+        level,
+        experience,
+        ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY level DESC, experience DESC, timestamp DESC) as rn
+      FROM
+      Records
+    )
+    SELECT
+      user_name,
+      skin,
+      score,
+      play_time,
+      player_kill,
+      total_moves,
+      timestamp,
+      level,
+      experience
+    FROM
+      RankedRecords
+    WHERE
+      rn = 1
+    ORDER BY
+      level DESC, experience DESC, timestamp DESC;
+  `
+
+  try {
+    const [rows] = await pool.query(query)
+
+    const formattedTime = rows.map((row) => ({
+      ...row,
+      timestamp: format(new Date(row.timestamp), 'yyyy-MM-dd HH:mm:ss')
+    }))
+    return formattedTime
+  } catch (error) {
+    console.error('Error fetching level:', error)
+    throw error
+  }
+}
+
 exports.sortAllPlayerKill = async () => {
   const query = `
   WITH RankedRecords AS (
@@ -103,6 +156,8 @@ exports.sortAllPlayerKill = async () => {
       player_kill,
       total_moves,
       timestamp,
+      level,
+      experience,
       ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY player_kill DESC, score DESC, timestamp DESC) as rn
     FROM
     Records
@@ -114,7 +169,9 @@ exports.sortAllPlayerKill = async () => {
     play_time,
     player_kill,
     total_moves,
-    timestamp
+    timestamp,
+    level,
+    experience
   FROM
     RankedRecords
   WHERE
@@ -148,6 +205,8 @@ exports.sortAllPlayerTime = async () => {
       player_kill,
       total_moves,
       timestamp,
+      level,
+      experience,
       ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY play_time DESC, score DESC, timestamp DESC) as rn
     FROM
     Records
@@ -159,7 +218,9 @@ exports.sortAllPlayerTime = async () => {
     play_time,
     player_kill,
     total_moves,
-    timestamp
+    timestamp,
+    level,
+    experience
   FROM
     RankedRecords
   WHERE
@@ -193,6 +254,8 @@ exports.sortAllPlayerMove = async () => {
       player_kill,
       total_moves,
       timestamp,
+      level,
+      experience,
       ROW_NUMBER() OVER (PARTITION BY user_name ORDER BY total_moves DESC, score DESC, timestamp DESC) as rn
     FROM
     Records
@@ -204,7 +267,9 @@ exports.sortAllPlayerMove = async () => {
     play_time,
     player_kill,
     total_moves,
-    timestamp
+    timestamp,
+    level,
+    experience
   FROM
     RankedRecords
   WHERE

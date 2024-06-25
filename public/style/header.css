@@ -1,0 +1,29 @@
+header {
+  background-color: black;
+  padding: 10px 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #00ff00;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo a {
+  font-family: "Press Start 2P", cursive;
+  font-size: 1.5rem;
+  color: #00ff00;
+  margin-left: 20px;
+  text-decoration: none;
+}
+nav {
+  display: flex;
+  align-items: center;
+}
+nav a {
+  color: #00ff00;
+  text-decoration: none;
+  font-family: "Press Start 2P", cursive;
+  margin-right: 20px;
+}
+nav a:hover {
+  text-decoration: underline;
+}

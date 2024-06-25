@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const {
   getPersonalRecord,
   sortAllPlayerScore,
+  sortAllPlayerLevel,
   sortAllPlayerKill,
   sortAllPlayerTime,
   sortAllPlayerMove,
@@ -35,6 +36,24 @@ exports.getPersonalMaxScore = async (req, res) => {
 exports.sortScoreRanking = async (req, res) => {
   try {
     const ranking = await sortAllPlayerScore()
+
+    const playerData = []
+
+    ranking.map((data) => {
+      return playerData.push(data)
+    })
+
+    res.status(200).json({
+      data: playerData
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.sortLevelRanking = async (req, res) => {
+  try {
+    const ranking = await sortAllPlayerLevel()
 
     const playerData = []
 

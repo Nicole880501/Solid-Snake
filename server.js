@@ -42,12 +42,12 @@ app.get('/analytics', async (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  onConnection(socket, io)
+  onConnection(socket)
 })
 
 setInterval(() => {
   gameLoop(io)
-}, 10)
+}, 50)
 
 startWeatherCycle(io)
 

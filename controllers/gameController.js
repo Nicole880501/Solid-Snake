@@ -4,14 +4,14 @@ const {
   generateFruit,
   generateRainbowFruit,
   movePlayer,
-  checkCollision,
   checkHeadCollision
 } = require('../models/game')
-const { getUser } = require('../models/user')
+const { getUser, updateUserLevel } = require('../models/user')
 const { createRecord } = require('../models/record')
 
 const INITIAL_SNAKE_LENGTH = 4
 const DEFAULT_INTERVAL = 100
+const SLOW_INTERVAL = 200
 const ACCELERATED_INTERVAL = 50
 const ACCELERATE_DURATION = 3000
 const COOLDOWN_DURATION = 20000
@@ -19,7 +19,7 @@ const WEATHER_DURATION = 20000
 
 const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
 
-function onConnection (socket, io) {
+function onConnection (socket) {
   console.log('New player connected:', socket.id)
   let onConnectionTime
 
@@ -53,27 +53,13 @@ function onConnection (socket, io) {
           score: 0,
           totalMoves: 0,
           kill: 0,
-          color: data.color // Store player color
+          color: data.color,
+          level: user.level,
+          experience: user.experience
         }
 
-        if (gameState.fruits.length === 0) {
-          for (let i = 0; i < 10; i++) {
-            gameState.fruits.push(generateFruit())
-          }
-        }
-        if (gameState.badFruits.length === 0) {
-          gameState.badFruits.push(generateFruit())
-        }
-        if (gameState.trapFruits.length === 0) {
-          for (let i = 0; i < 10; i++) {
-            gameState.trapFruits.push(generateFruit())
-          }
-        }
-        if (gameState.rainbowFruits.length === 0) {
-          generateRainbowFruit()
-        }
-
-        gameState.weather = WEATHER_TYPES[Math.floor(Math.random() * WEATHER_TYPES.length)]
+        // Set player state based on current weather
+        adjustPlayerStateForWeather(gameState.players[socket.id], gameState.weather)
 
         setTimeout(() => {
           if (gameState.players[socket.id]) {
@@ -140,13 +126,16 @@ function onConnection (socket, io) {
     const player = gameState.players[socket.id]
     if (player) {
       try {
+        await updateUserLevel(player.name, player.level, player.experience)
         await createRecord({
           user_name: player.name,
           skin: player.color,
           score: player.score,
           play_time: totalConnectionTime,
           player_kill: player.kill,
-          total_moves: player.totalMoves
+          total_moves: player.totalMoves,
+          level: player.level,
+          experience: player.experience
         })
         delete gameState.players[socket.id]
       } catch (error) {
@@ -156,6 +145,17 @@ function onConnection (socket, io) {
   })
 }
 
+function adjustPlayerStateForWeather (player, weather) {
+  if (weather === 'rainy') {
+    player.interval = SLOW_INTERVAL
+  } else if (weather === 'snowy') {
+    player.snake = player.snake.slice(0, 4)
+    player.interval = DEFAULT_INTERVAL // Set speed to default during snowy weather
+  } else if (weather === 'sunny') {
+    player.interval = DEFAULT_INTERVAL
+  }
+}
+
 async function handlePlayerDeath (playerId) {
   const player = gameState.players[playerId]
   if (player) {
@@ -163,7 +163,9 @@ async function handlePlayerDeath (playerId) {
       await createRecord({
         user_name: player.name,
         skin: player.color,
-        score: player.score
+        score: player.score,
+        level: player.level,
+        experience: player.experience
       })
       delete gameState.players[playerId]
     } catch (error) {
@@ -177,18 +179,96 @@ function startWeatherCycle (io) {
 
   setInterval(() => {
     gameState.weather = WEATHER_TYPES[currentWeatherIndex]
+
+    // Handle weather effects
+    adjustGameStateForWeather(gameState.weather)
+
     io.sockets.emit('weatherChange', gameState.weather)
     currentWeatherIndex = (currentWeatherIndex + 1) % WEATHER_TYPES.length
   }, WEATHER_DURATION)
 }
 
+function adjustGameStateForWeather (weather) {
+  gameState.rainbowFruits = []
+  if (weather === 'sunny') {
+    gameState.fruits = Array(10).fill().map(generateFruit)
+    gameState.badFruits = [generateFruit()]
+    gameState.trapFruits = Array(10).fill().map(generateFruit)
+    generateRainbowFruit()
+    for (const playerId in gameState.players) {
+      gameState.players[playerId].interval = DEFAULT_INTERVAL
+    }
+  } else if (weather === 'rainy') {
+    gameState.fruits = Array(20).fill().map(generateFruit)
+    gameState.badFruits = [generateFruit()]
+    gameState.trapFruits = Array(10).fill().map(generateFruit)
+    generateRainbowFruit()
+    for (const playerId in gameState.players) {
+      gameState.players[playerId].interval = SLOW_INTERVAL
+    }
+  } else if (weather === 'snowy') {
+    gameState.fruits = []
+    gameState.badFruits = []
+    gameState.trapFruits = []
+    for (const playerId in gameState.players) {
+      const player = gameState.players[playerId]
+      player.snake = player.snake.slice(0, 4)
+      player.interval = DEFAULT_INTERVAL // Set speed to default during snowy weather
+    }
+  }
+}
+
+function calculateLevel (experience) {
+  let level = 1
+  let requiredExperience = 300
+  let totalRequiredExperience = 300
+
+  while (experience >= totalRequiredExperience) {
+    level += 1
+    requiredExperience += 200
+    totalRequiredExperience += requiredExperience
+  }
+
+  return level
+}
+
+function addExperience (player, experience) {
+  player.experience += experience
+  const newLevel = calculateLevel(player.experience)
+  if (newLevel > player.level) {
+    player.level = newLevel
+    console.log(`Player ${player.name} leveled up to ${player.level}`)
+  }
+}
+
 function gameLoop (io) {
   const playersToRemove = []
   const headCollisions = []
+  const fruitMap = new Map()
+  const badFruitMap = new Map()
+  const trapFruitMap = new Map()
+  const rainbowFruitMap = new Map()
+
+  gameState.fruits.forEach((fruit, index) => {
+    fruitMap.set(`${fruit.x},${fruit.y}`, index)
+  })
+
+  gameState.badFruits.forEach((badFruit, index) => {
+    badFruitMap.set(`${badFruit.x},${badFruit.y}`, index)
+  })
+
+  gameState.trapFruits.forEach((trapFruit, index) => {
+    trapFruitMap.set(`${trapFruit.x},${trapFruit.y}`, index)
+  })
+
+  gameState.rainbowFruits.forEach((rainbowFruit, index) => {
+    rainbowFruitMap.set(`${rainbowFruit.x},${rainbowFruit.y}`, index)
+  })
+
   for (const playerId in gameState.players) {
     const player = gameState.players[playerId]
-
     const now = Date.now()
+
     if (!player.lastMove || now - player.lastMove >= player.interval) {
       const alive = movePlayer(player, gameState)
       player.lastMove = now
@@ -197,44 +277,43 @@ function gameLoop (io) {
         playersToRemove.push(playerId)
         io.to(playerId).emit('death')
       } else {
-        gameState.fruits.forEach((fruit, index) => {
-          if (checkCollision(player, fruit)) {
-            player.grow = true
-            player.score += 10
-            gameState.fruits.splice(index, 1)
-            gameState.fruits.push(generateFruit())
-          }
-        })
+        const head = player.snake[0]
+        const headPos = `${head.x},${head.y}`
 
-        gameState.badFruits.forEach((badFruit, index) => {
-          if (checkCollision(player, badFruit)) {
-            if (player.snake.length > 1) {
-              player.snake.pop()
-              player.score -= 10
-            }
-            gameState.badFruits.splice(index, 1)
-            gameState.badFruits.push(generateFruit())
-          }
-        })
+        if (fruitMap.has(headPos)) {
+          player.grow = true
+          player.score += 10
+          addExperience(player, 10)
+          const fruitIndex = fruitMap.get(headPos)
+          gameState.fruits.splice(fruitIndex, 1)
+          gameState.fruits.push(generateFruit())
+        }
 
-        gameState.rainbowFruits.forEach((rainbowFruit, index) => {
-          if (checkCollision(player, rainbowFruit)) {
-            player.grow = true
-            player.score += 50
-
-            for (let i = 0; i < 5; i++) {
-              player.snake.push({ ...player.snake[player.snake.length - 1] })
-            }
-            gameState.rainbowFruits.splice(index, 1)
+        if (badFruitMap.has(headPos)) {
+          if (player.snake.length > 1) {
+            player.snake.pop()
+            player.score -= 10
           }
-        })
+          const badFruitIndex = badFruitMap.get(headPos)
+          gameState.badFruits.splice(badFruitIndex, 1)
+          gameState.badFruits.push(generateFruit())
+        }
 
-        gameState.trapFruits.forEach((trapFruits) => {
-          if (checkCollision(player, trapFruits)) {
-            playersToRemove.push(playerId)
-            io.to(playerId).emit('death')
+        if (rainbowFruitMap.has(headPos)) {
+          player.grow = true
+          player.score += 50
+          addExperience(player, 50)
+          for (let i = 0; i < 5; i++) {
+            player.snake.push({ ...player.snake[player.snake.length - 1] })
           }
-        })
+          const rainbowFruitIndex = rainbowFruitMap.get(headPos)
+          gameState.rainbowFruits.splice(rainbowFruitIndex, 1)
+        }
+
+        if (trapFruitMap.has(headPos)) {
+          playersToRemove.push(playerId)
+          io.to(playerId).emit('death')
+        }
       }
     }
   }
@@ -248,6 +327,8 @@ function gameLoop (io) {
   }
 
   headCollisions.forEach((playerId) => {
+    const player = gameState.players[playerId]
+    addExperience(player, 50)
     playersToRemove.push(playerId)
     io.to(playerId).emit('death')
   })

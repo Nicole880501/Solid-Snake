@@ -9,9 +9,14 @@ let gameState = {}
 let weather = 'sunny'
 let particles = []
 let previousWeather = null
+let playerId = null // 新增用于存储当前玩家ID
 
 document.getElementById('startButton').addEventListener('click', () => {
   const token = getCookie('access_token')
+  if (!token) {
+    window.alert('please signin')
+    window.location.href = '/signin'
+  }
   const playerColor = document.getElementById('color').value
   socket.emit('startGame', { token, color: playerColor })
 })
@@ -33,6 +38,10 @@ socket.on('death', () => {
   } else {
     window.location.href = '/leaderboard'
   }
+})
+
+socket.on('connect', () => {
+  playerId = socket.id // 存储当前玩家的ID
 })
 
 window.addEventListener('keydown', (event) => {
@@ -61,29 +70,35 @@ function getCookie (name) {
   if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
+// eslint-disable-next-line no-unused-vars
+function signout () {
+  document.cookie = 'access_token=; Max-Age=0; path=/'
+
+  window.location.href = '/'
+}
+
 function initParticles () {
   if (previousWeather) {
-    // 将前一个天气的粒子保留在数组中
     particles = particles.filter(p => p.weather === previousWeather)
   } else {
     particles = []
   }
 
   if (weather === 'rainy') {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
-        y: -Math.random() * canvas.height, // 从画布上方生成
+        y: -Math.random() * canvas.height,
         speedY: Math.random() * 2 + 1,
         length: Math.random() * 10 + 10,
         weather: 'rainy'
       })
     }
   } else if (weather === 'snowy') {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) {
       particles.push({
         x: Math.random() * canvas.width,
-        y: -Math.random() * canvas.height, // 从画布上方生成
+        y: -Math.random() * canvas.height,
         speedY: Math.random() * 1 + 0.5,
         radius: Math.random() * 2 + 1,
         weather: 'snowy'
@@ -94,7 +109,7 @@ function initParticles () {
 }
 
 function drawParticles () {
-  particles = particles.filter(p => p.y <= canvas.height) // 移除超出画布底部的粒子
+  particles = particles.filter(p => p.y <= canvas.height)
 
   particles.forEach(particle => {
     if (particle.weather === 'rainy') {
@@ -119,23 +134,29 @@ function drawPlayer () {
   for (const playerId in gameState.players) {
     const player = gameState.players[playerId]
     if (player.color === 'rainbow') {
-      drawRainbowSnake(player)
+      drawRainbowSnake(player, playerId)
     } else {
-      drawSnake(player)
+      drawSnake(player, playerId)
     }
   }
 }
 
-function drawSnake (player) {
+function drawSnake (player, id) {
   ctx.fillStyle = player.color
   ctx.strokeStyle = 'white'
   player.snake.forEach((segment) => {
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale)
+    if (id === playerId) { // 当前玩家的蛇有特殊的边框颜色
+      ctx.strokeStyle = '#00ff00'
+    } else {
+      ctx.strokeStyle = 'red'
+    }
+    ctx.lineWidth = 2
     ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale)
   })
 }
 
-function drawRainbowSnake (player) {
+function drawRainbowSnake (player, id) {
   const colors = [
     'red',
     'orange',
@@ -148,7 +169,12 @@ function drawRainbowSnake (player) {
   player.snake.forEach((segment, index) => {
     ctx.fillStyle = colors[index % colors.length]
     ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale)
-    ctx.strokeStyle = 'white'
+    if (id === playerId) { // 当前玩家的蛇有特殊的边框颜色
+      ctx.strokeStyle = '#00ff00'
+    } else {
+      ctx.strokeStyle = 'red'
+    }
+    ctx.lineWidth = 2
     ctx.strokeRect(segment.x * scale, segment.y * scale, scale, scale)
   })
 }
@@ -203,12 +229,20 @@ function drawLeaderboard () {
   players.sort((a, b) => b.score - a.score)
   players.forEach((player) => {
     const playerElement = document.createElement('div')
-    playerElement.textContent = `${player.name}: ${player.score} score | ${player.kill} kill`
+    playerElement.textContent = `${player.name} | Lv:${player.level} | score:${player.score} | kill:${player.kill}`
     leaderboard.appendChild(playerElement)
   })
 }
 
-function draw () {
+let lastUpdateTime = 0
+function draw (timestamp) {
+  const deltaTime = timestamp - lastUpdateTime
+  if (deltaTime < 16) {
+    window.requestAnimationFrame(draw)
+    return
+  }
+  lastUpdateTime = timestamp
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   drawParticles()
   drawPlayer()
@@ -217,4 +251,21 @@ function draw () {
   drawRainbowFruits()
   drawTrapFruits()
   drawLeaderboard()
+
+  window.requestAnimationFrame(draw)
 }
+
+window.requestAnimationFrame(draw)
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = getCookie('access_token')
+  if (!token) {
+    document.getElementById('sign-in-link').style.display = 'inline'
+    document.getElementById('sign-out-link').style.display = 'none'
+    document.getElementById('analytics-link').style.display = 'none'
+  } else {
+    document.getElementById('sign-in-link').style.display = 'none'
+    document.getElementById('sign-out-link').style.display = 'inline'
+    document.getElementById('analytics-link').style.display = 'inline'
+  }
+})

@@ -4,59 +4,89 @@ function getCookie (name) {
   if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
+// eslint-disable-next-line no-unused-vars
+function signout () {
+  document.cookie = 'access_token=; Max-Age=0; path=/'
+
+  window.location.href = '/'
+}
+
 async function fetchPersonalHighestRecord (type) {
   try {
     const token = getCookie('access_token')
 
-    if (type === 'score') {
-      const response = await fetch('/record/playerScore', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      console.log(data)
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Score: ${data.highest_score}`
-    } else if (type === 'kill') {
-      const response = await fetch('/record/playerKill', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Kill: ${data.highest_kill}`
-    } else if (type === 'time') {
-      const response = await fetch('/record/playerTime', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Playtime: ${data.highest_time}'s`
-    } else if (type === 'moves') {
-      const response = await fetch('/record/playerMove', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = await response.json()
-      document.getElementById(
-        'highest-title'
-      ).innerHTML = `${data.user_name}, Your Highest Moves: ${data.highest_move} steps`
+    if (!token) {
+      document.getElementById('sign-in-link').style.display = 'inline'
+      document.getElementById('sign-out-link').style.display = 'none'
+      document.getElementById('analytics-link').style.display = 'none'
+      document.getElementById('highest-title').innerHTML = 'You Are Not Signin'
+    } else {
+      document.getElementById('sign-in-link').style.display = 'none'
+      document.getElementById('sign-out-link').style.display = 'inline'
+      document.getElementById('analytics-link').style.display = 'inline'
+      if (type === 'score') {
+        const response = await fetch('/record/playerScore', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        console.log(data)
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Score: ${data.highest_score}`
+      } else if (type === 'level') {
+        const response = await fetch('/user/level', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        console.log(data)
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.name}, Your Level: ${data.level}`
+      } else if (type === 'kill') {
+        const response = await fetch('/record/playerKill', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Kill: ${data.highest_kill}`
+      } else if (type === 'time') {
+        const response = await fetch('/record/playerTime', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Playtime: ${data.highest_time}'s`
+      } else if (type === 'moves') {
+        const response = await fetch('/record/playerMove', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        document.getElementById(
+          'highest-title'
+        ).innerHTML = `${data.user_name}, Your Highest Moves: ${data.highest_move} steps`
+      }
     }
   } catch (error) {
     console.error('Error fetching highest score:', error)
@@ -68,6 +98,8 @@ async function fetchRanking (type) {
     let url = ''
     if (type === 'score') {
       url = '/record/scoreRanking'
+    } else if (type === 'level') {
+      url = '/record/levelRanking'
     } else if (type === 'kill') {
       url = '/record/killRanking'
     } else if (type === 'time') {
@@ -85,6 +117,7 @@ async function fetchRanking (type) {
       row.innerHTML = `
         <td>${i + 1}</td>
         <td>${players.data[i].user_name}</td>
+        <td>${players.data[i].level}</td>
         <td>${players.data[i].score}</td>
         <td>${players.data[i].player_kill}</td>
         <td>${players.data[i].skin}</td>

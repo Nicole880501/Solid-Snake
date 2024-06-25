@@ -10,27 +10,70 @@
     />
     <link rel="stylesheet" href="./style/common.css" />
     <link rel="stylesheet" href="./style/leaderboard.css" />
+    <link rel="stylesheet" href="./style/header.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
+    <header>
+      <div class="logo"><a href="/">Solid Snake</a></div>
+      <nav>
+        <a href="/game">Game</a>
+        <a href="/leaderboard">Ranking</a>
+        <a href="/analytics" id="analytics-link">Analytics</a>
+        <a href="/signin" id="sign-in-link">Sign In</a>
+        <a href="/" id="sign-out-link" onclick="signout()">Sign Out</a>
+      </nav>
+    </header>
     <div class="container">
       <h1 id="highest-title">Loading...</h1>
       <hr />
       <h2>World Rankings</h2>
       <div class="btn-group" role="group" aria-label="Ranking Type">
-        <button type="button" class="btn btn-primary" onclick="fetchRanking('score')">Score</button>
-        <button type="button" class="btn btn-primary" onclick="fetchRanking('kill')">Kill</button>
-        <button type="button" class="btn btn-primary" onclick="fetchRanking('time')">Time</button>
-        <button type="button" class="btn btn-primary" onclick="fetchRanking('moves')">Moves</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="fetchRanking('score')"
+        >
+          Score
+        </button>
+        <button
+        type="button"
+        class="btn btn-primary"
+        onclick="fetchRanking('level')"
+      >
+        Level
+      </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="fetchRanking('kill')"
+        >
+          Kill
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="fetchRanking('time')"
+        >
+          Time
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="fetchRanking('moves')"
+        >
+          Moves
+        </button>
       </div>
       <table class="table table-dark table-striped">
         <thead>
           <tr>
             <th>Rank</th>
             <th>Player</th>
+            <th>Level</th>
             <th>Score</th>
             <th>Kill</th>
             <th>Skin</th>
