@@ -6,6 +6,21 @@ document
     const email = document.getElementById('email').value
     const password = document.getElementById('password').value
 
+    if (playerName.length < 3) {
+      window.alert('Player name must be at least 3 characters long')
+      return
+    }
+
+    if (email.length < 6) {
+      window.alert('Email must be at least 6 character long')
+      return
+    }
+
+    if (password.length < 6) {
+      window.alert('Password must be at least 6 character long')
+      return
+    }
+
     try {
       const response = await fetch('/user/signup', {
         method: 'POST',

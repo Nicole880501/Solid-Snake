@@ -4,6 +4,13 @@ function getCookie (name) {
   if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
+// eslint-disable-next-line no-unused-vars
+function signout () {
+  document.cookie = 'access_token=; Max-Age=0; path=/'
+
+  window.location.href = '/'
+}
+
 async function fetchTotalScore () {
   try {
     const token = getCookie('access_token')

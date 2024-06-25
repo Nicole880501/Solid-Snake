@@ -14,6 +14,7 @@ let playerId = null // 新增用于存储当前玩家ID
 document.getElementById('startButton').addEventListener('click', () => {
   const token = getCookie('access_token')
   if (!token) {
+    window.alert('please signin')
     window.location.href = '/signin'
   }
   const playerColor = document.getElementById('color').value
@@ -67,6 +68,13 @@ function getCookie (name) {
   const value = `; ${document.cookie}`
   const parts = value.split(`; ${name}=`)
   if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+// eslint-disable-next-line no-unused-vars
+function signout () {
+  document.cookie = 'access_token=; Max-Age=0; path=/'
+
+  window.location.href = '/'
 }
 
 function initParticles () {
@@ -248,3 +256,16 @@ function draw (timestamp) {
 }
 
 window.requestAnimationFrame(draw)
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = getCookie('access_token')
+  if (!token) {
+    document.getElementById('sign-in-link').style.display = 'inline'
+    document.getElementById('sign-out-link').style.display = 'none'
+    document.getElementById('analytics-link').style.display = 'none'
+  } else {
+    document.getElementById('sign-in-link').style.display = 'none'
+    document.getElementById('sign-out-link').style.display = 'inline'
+    document.getElementById('analytics-link').style.display = 'inline'
+  }
+})

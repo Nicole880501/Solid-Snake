@@ -31,7 +31,7 @@ exports.signup = async (req, res) => {
 
     const userId = await createUser(userData)
 
-    const EXPIRE_TIME = 60 * 60
+    const EXPIRE_TIME = 600 * 600
     const token = jwt.sign({ name: userData.name }, process.env.JWT_KEY, {
       expiresIn: EXPIRE_TIME
     })
@@ -70,7 +70,7 @@ exports.signin = async (req, res) => {
       res.status(403).json({ error: 'email or password incorrect' })
     }
 
-    const EXPIRE_TIME = 60 * 60
+    const EXPIRE_TIME = 600 * 600
     const token = jwt.sign({ name: existingUser.name }, process.env.JWT_KEY, {
       expiresIn: EXPIRE_TIME
     })
@@ -130,7 +130,7 @@ exports.googleCallback = async (req, res) => {
       if (existingUser.provider === 'native') {
         res.status(403).json({ error: '此信箱已在本地註冊過' })
       } else {
-        const EXPIRE_TIME = 60 * 60
+        const EXPIRE_TIME = 600 * 600
         const token = jwt.sign({ name: userData.name }, process.env.JWT_KEY, {
           expiresIn: EXPIRE_TIME
         })

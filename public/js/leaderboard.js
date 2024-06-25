@@ -4,13 +4,26 @@ function getCookie (name) {
   if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
+// eslint-disable-next-line no-unused-vars
+function signout () {
+  document.cookie = 'access_token=; Max-Age=0; path=/'
+
+  window.location.href = '/'
+}
+
 async function fetchPersonalHighestRecord (type) {
   try {
     const token = getCookie('access_token')
 
     if (!token) {
+      document.getElementById('sign-in-link').style.display = 'inline'
+      document.getElementById('sign-out-link').style.display = 'none'
+      document.getElementById('analytics-link').style.display = 'none'
       document.getElementById('highest-title').innerHTML = 'You Are Not Signin'
     } else {
+      document.getElementById('sign-in-link').style.display = 'none'
+      document.getElementById('sign-out-link').style.display = 'inline'
+      document.getElementById('analytics-link').style.display = 'inline'
       if (type === 'score') {
         const response = await fetch('/record/playerScore', {
           method: 'GET',
