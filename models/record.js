@@ -432,3 +432,16 @@ SELECT r1.user_name, r1.skin, r1.skin_count
     throw error
   }
 }
+
+exports.getMostDeathZone = async () => {
+  const query = `SELECT death_x AS region_x, death_y AS region_y, COUNT(*) AS death_count
+  FROM Records
+  GROUP BY region_x, region_y;`
+  try {
+    const [rows] = await pool.query(query)
+    return rows
+  } catch (error) {
+    console.error('Error fetching death zone record:', error)
+    throw error
+  }
+}

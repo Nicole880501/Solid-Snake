@@ -11,7 +11,8 @@ const {
   getAllGame,
   getAllTime,
   getAllMove,
-  getMostUsedSkin
+  getMostUsedSkin,
+  getMostDeathZone
 } = require('../models/record')
 
 exports.getPersonalMaxScore = async (req, res) => {
@@ -225,6 +226,21 @@ exports.getPlayerSkin = async (req, res) => {
     const username = decoded.name
 
     const userRecord = await getMostUsedSkin(username)
+
+    if (userRecord) {
+      res.status(200).json(userRecord)
+    } else {
+      res.status(404).json({ message: 'player not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+}
+
+exports.getDeathZone = async (req, res) => {
+  try {
+    const userRecord = await getMostDeathZone()
 
     if (userRecord) {
       res.status(200).json(userRecord)

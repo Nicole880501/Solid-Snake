@@ -41,6 +41,10 @@ app.get('/analytics', async (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'analytics.html'))
 })
 
+app.get('/deathZone', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'deathZone.html'))
+})
+
 io.on('connection', (socket) => {
   onConnection(socket)
 })

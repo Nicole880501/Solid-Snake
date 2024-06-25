@@ -126,6 +126,7 @@ function onConnection (socket) {
     const player = gameState.players[socket.id]
     if (player) {
       try {
+        const deathPosition = player.snake[0]
         await updateUserLevel(player.name, player.level, player.experience)
         await createRecord({
           user_name: player.name,
@@ -135,7 +136,9 @@ function onConnection (socket) {
           player_kill: player.kill,
           total_moves: player.totalMoves,
           level: player.level,
-          experience: player.experience
+          experience: player.experience,
+          death_x: deathPosition.x,
+          death_y: deathPosition.y
         })
         delete gameState.players[socket.id]
       } catch (error) {
@@ -160,12 +163,15 @@ async function handlePlayerDeath (playerId) {
   const player = gameState.players[playerId]
   if (player) {
     try {
+      const deathPosition = player.snake[0]
       await createRecord({
         user_name: player.name,
         skin: player.color,
         score: player.score,
         level: player.level,
-        experience: player.experience
+        experience: player.experience,
+        death_x: deathPosition.x,
+        death_y: deathPosition.y
       })
       delete gameState.players[playerId]
     } catch (error) {
