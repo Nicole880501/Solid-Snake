@@ -44,6 +44,9 @@ async function fetchDeathRates () {
       const y = region_y * scale
       ctx.fillStyle = getColorByDeathRate(death_count, maxDeathRate)
       ctx.fillRect(x, y, scale, scale)
+      ctx.strokeStyle = 'black'
+      ctx.lineWidth = 2
+      ctx.strokeRect(x, y, scale, scale)
       // eslint-disable-next-line camelcase
       deathCounts[`${region_x},${region_y}`] = death_count
     })
