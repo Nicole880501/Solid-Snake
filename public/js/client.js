@@ -61,7 +61,7 @@ window.addEventListener('keydown', (event) => {
     case 'ArrowRight':
       socket.emit('changeDirection', 'right')
       break
-    case ' ':
+    case 'z':
       socket.emit('setSpeed', true)
       break
   }
