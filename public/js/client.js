@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-undef
 const socket = io()
 
@@ -14,8 +15,10 @@ let playerId = null // 新增用于存储当前玩家ID
 document.getElementById('startButton').addEventListener('click', () => {
   const token = getCookie('access_token')
   if (!token) {
-    window.alert('please signin')
-    window.location.href = '/signin'
+    showAlert("Please sign in ! Redirect to sign in page 3's later...", 'warning')
+    setTimeout(() => {
+      window.location.href = '/signin'
+    }, 3000)
   }
   const playerColor = document.getElementById('color').value
   socket.emit('startGame', { token, color: playerColor })
@@ -33,11 +36,11 @@ socket.on('weatherChange', (newWeather) => {
 
 socket.on('death', () => {
   socket.disconnect()
-  if (window.confirm('You died ! try again ?') === true) {
-    window.location.href = '/game'
-  } else {
-    window.location.href = '/leaderboard'
-  }
+  const player = gameState.players[playerId]
+  const message = `${player.name} Your Record: <br /> Level: ${player.level}, Score: ${player.score}, Kill: ${player.kill}`
+  document.getElementById('deathMessage').innerHTML = message
+  // eslint-disable-next-line no-undef
+  $('#deathModal').modal('show')
 })
 
 socket.on('connect', () => {
@@ -70,10 +73,8 @@ function getCookie (name) {
   if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
-// eslint-disable-next-line no-unused-vars
 function signout () {
   document.cookie = 'access_token=; Max-Age=0; path=/'
-
   window.location.href = '/'
 }
 
@@ -224,14 +225,25 @@ function drawTrapFruits () {
 
 function drawLeaderboard () {
   const leaderboard = document.getElementById('leaderboard')
-  leaderboard.innerHTML = '<h3>Leaderboard</h3>'
+  leaderboard.innerHTML = '<h5>Leaderboard</h5>'
   const players = Object.values(gameState.players)
   players.sort((a, b) => b.score - a.score)
   players.forEach((player) => {
     const playerElement = document.createElement('div')
-    playerElement.textContent = `${player.name} | Lv:${player.level} | score:${player.score} | kill:${player.kill}`
+    playerElement.innerHTML = `${player.name}|Lv:${player.level}<br />Score:${player.score}|Kill:${player.kill}`
     leaderboard.appendChild(playerElement)
   })
+}
+
+function showAlert (message, type) {
+  const alertContainer = document.getElementById('alert-container')
+  const alert = document.createElement('div')
+  alert.className = `alert alert-${type} alert-dismissible fade show`
+  alert.role = 'alert'
+  alert.innerHTML = `
+        ${message}
+    `
+  alertContainer.appendChild(alert)
 }
 
 let lastUpdateTime = 0
@@ -269,3 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('analytics-link').style.display = 'inline'
   }
 })
+
+function restartGame () {
+  window.location.href = '/game'
+}
+
+function goToLeaderboard () {
+  window.location.href = '/leaderboard'
+}

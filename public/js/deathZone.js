@@ -19,6 +19,15 @@ function getColorByDeathRate (deathRate, maxDeathRate) {
 async function fetchDeathRates () {
   try {
     const token = getCookie('access_token')
+    if (!token) {
+      document.getElementById('analytics-link').style.display = 'none'
+      document.getElementById('sign-out-link').style.display = 'none'
+      document.getElementById('sign-in-link').style.display = 'inline'
+    } else {
+      document.getElementById('analytics-link').style.display = 'inline'
+      document.getElementById('analytics-link').style.display = 'inline'
+      document.getElementById('sign-in-link').style.display = 'none'
+    }
     const response = await fetch('/record/deathZone', {
       method: 'GET',
       headers: {
@@ -81,9 +90,5 @@ function hideTooltip () {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const token = getCookie('access_token')
-  if (!token) {
-    window.location.href = '/signin'
-  }
   fetchDeathRates()
 })

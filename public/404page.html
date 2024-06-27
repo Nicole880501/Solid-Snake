@@ -3,38 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solid Snake - Analytics</title>
+    <title>Solid Snake - Home</title>
     <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp" />
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./style/common.css" />
-    <link rel="stylesheet" href="./style/deathZone.css" />
-    <link rel="stylesheet" href="./style/header.css" />
+    <link rel="stylesheet" href="./style/index.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    <header>
-      <div class="logo"><a href="/">Solid Snake</a></div>
-      <nav>
-        <a href="/game">Game</a>
-        <a href="/leaderboard">Ranking</a>
-        <a href="/analytics" id="analytics-link">Analytics</a>
-        <a href="/deathZone">Death Zone</a>
-        <a href="/signin" id="sign-in-link">Sign In</a>
-        <a href="/" id="sign-out-link" onclick="signout()">Sign Out</a>
-      </nav>
-    </header>
     <div class="container">
-        <h1>Death Zone</h1>
-        <canvas id="deathRatesCanvas" width="1600" height="800"></canvas>
-        <div id="tooltip"></div>
-      </div>
-    <script src="./js/deathZone.js"></script>
+      <h1>Where Are You Going ?</h1>
+      <h2>Sorry We Couldn't Find That Page</h2>
+      <button class="btn btn-primary">Back To Home Page</button>
+    </div>
+    <script>
+      const button = window.document.querySelector(".btn");
+
+      button.addEventListener("click", () => {
+        window.location.href = "/";
+      });
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -37,16 +37,20 @@ body {
   height: 800px;
 }
 #leaderboard {
-  position: absolute;
-  top: 10px;
-  right: 160px;
   background-color: rgba(0, 0, 0, 0.5);
   color: #00ff00;
   padding: 10px;
-  border: 2px solid #00ff00;
+  border: 5px solid #00ff00;
   z-index: 10;
   font-family: "Press Start 2P", cursive;
 }
-#leaderboard h3 {
-  margin: 0 0 10px 0;
+.modal-content{
+  background-color: black;
+  border: 2px solid #00ff00;
+}
+.modal-content {
+  text-align: center;
+}
+.modal-footer {
+  justify-content: center;
 }

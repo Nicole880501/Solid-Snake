@@ -25,7 +25,7 @@ exports.signup = async (req, res) => {
 
     const existingUser = await getUser(name)
     if (existingUser) {
-      res.status(403).json({ error: '玩家名或信箱已被註冊' })
+      res.status(403).json({ error: 'Player name or email have been signup' })
       return
     }
 

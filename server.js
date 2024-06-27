@@ -55,6 +55,10 @@ setInterval(() => {
 
 startWeatherCycle(io)
 
+app.get('/*', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', '404page.html'))
+})
+
 app.use(errorHandler)
 
 socketErrorHandler(server)
