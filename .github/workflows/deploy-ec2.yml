@@ -8,15 +8,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: SET SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with: 
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: npm install
+      - name: deploy to ec2
         run: |
-          npm install 
+          ssh -o StrictHostKeyChecking=no root@ec2-13-210-95-214.ap-southeast-2.compute.amazonaws.com << 'EOF'
+            cd personalProject/
+            git checkout develop
+            git pull origin develop
+            npm install
+            pm2 restart develop
+          EOF
+
