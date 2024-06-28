@@ -1,0 +1,22 @@
+name: 部署 solid_snake
+
+on:
+  push:
+    branches:
+    - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.04
+
+      - name: npm install
+        run: |
+          npm install 
