@@ -27,6 +27,10 @@ app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
+app.get('/health', async (req, res) {
+  res.status(200)
+})
+
 app.get('/signin', async (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signin.html'))
 })
