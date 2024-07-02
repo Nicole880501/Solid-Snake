@@ -1,0 +1,52 @@
+config:
+  target: "https://e055339.com"
+  phases:
+    - duration: 30
+      arrivalRate: 1
+  engines:
+    socketio: {}
+
+scenarios:
+  - engine: "socketio"
+    flow:
+      - emit:
+          channel: "startGame"
+          data: { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RyZXNzbWFuIiwiaWF0IjoxNzE5ODkwNTU3LCJleHAiOjE3MjAyNTA1NTd9.RlkdeuFiYYSgz-tiVYSXU_poxhGn_Yom25mpxjBQ8vE", color: "white" }
+      - think: 10
+
+
+
+
+# config:
+#   target: "https://e055339.com"
+#   phases:
+#     - duration: 15
+#       arrivalRate: 1
+#   engines:
+#     socketio: {}
+#   timeout: 10
+
+# scenarios:
+#   - engine: "socketio"
+#     flow:
+#       - emit:
+#           channel: "startGame"
+#           data: { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RyZXNzbWFuIiwiaWF0IjoxNzE5Nzk2Mzc0LCJleHAiOjE3MjAxNTYzNzR9.BAYOy8zpjUGO3kUFJPAnDZOdjN_pdfADLJzlSMyRZXU", color: "white" }
+#       - think: 
+#       - loop:
+#           - emit:
+#               channel: "changeDirection"
+#               data: "right"
+#           - think: 1
+#           - emit:
+#               channel: "changeDirection"
+#               data: "down"
+#           - think: 1
+#           - emit:
+#               channel: "changeDirection"
+#               data: "left"
+#           - think: 1
+#           - emit:
+#               channel: "changeDirection"
+#               data: "up"
+#           - think: 1

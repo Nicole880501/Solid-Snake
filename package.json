@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "artillery-engine-socketio-v3": "^1.2.0",
     "bcrypt": "^5.1.1",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
