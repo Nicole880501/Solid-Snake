@@ -28,7 +28,7 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/health', async (req, res) => {
-  res.status(200)
+  res.status(200).send('ok')
 })
 
 app.get('/signin', async (req, res) => {
