@@ -23,6 +23,10 @@ app.use(express.static('public'))
 app.use('/user', userRoutes)
 app.use('/record', recordRoutes)
 
+app.get('/', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
 app.get('/signin', async (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signin.html'))
 })
