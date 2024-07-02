@@ -27,7 +27,7 @@ app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
-app.get('/health', async (req, res) {
+app.get('/health', async (req, res) => {
   res.status(200)
 })
 
