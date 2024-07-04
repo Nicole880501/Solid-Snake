@@ -21,64 +21,64 @@ const recordRoutes = require('./routes/record')
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient))
-})
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, 'public')))
-app.use(express.static('public'))
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
+  app.use(express.static(path.join(__dirname, 'public')))
+  app.use(express.static('public'))
 
-app.use('/user', userRoutes)
-app.use('/record', recordRoutes)
+  app.use('/user', userRoutes)
+  app.use('/record', recordRoutes)
 
-app.get('/', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
-})
+  app.get('/', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+  })
 
-app.get('/health', async (req, res) => {
-  res.status(200).send('ok')
-})
+  app.get('/health', async (req, res) => {
+    res.status(200).send('ok')
+  })
 
-app.get('/signin', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'signin.html'))
-})
-app.get('/signup', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'signup.html'))
-})
-app.get('/game', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'game.html'))
-})
+  app.get('/signin', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signin.html'))
+  })
+  app.get('/signup', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html'))
+  })
+  app.get('/game', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'game.html'))
+  })
 
-app.get('/leaderboard', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'leaderboard.html'))
-})
+  app.get('/leaderboard', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'leaderboard.html'))
+  })
 
-app.get('/analytics', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'analytics.html'))
-})
+  app.get('/analytics', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'analytics.html'))
+  })
 
-app.get('/deathZone', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'deathZone.html'))
-})
+  app.get('/deathZone', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'deathZone.html'))
+  })
 
-io.on('connection', (socket) => {
-  onConnection(socket)
-})
+  io.on('connection', (socket) => {
+    onConnection(socket)
+  })
 
-setInterval(() => {
-  gameLoop(io)
-}, 50)
+  setInterval(() => {
+    gameLoop(io)
+  }, 50)
 
-startWeatherCycle(io)
+  startWeatherCycle(io)
 
-app.get('/*', async (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', '404page.html'))
-})
+  app.get('/*', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', '404page.html'))
+  })
 
-app.use(errorHandler)
+  app.use(errorHandler)
 
-socketErrorHandler(server)
+  socketErrorHandler(server)
 
-server.listen(process.env.PORT || 4000, () => {
-  console.log(`Server running on port ${process.env.PORT}`)
+  server.listen(process.env.PORT || 4000, () => {
+    console.log(`Server running on port ${process.env.PORT}`)
+  })
 })
