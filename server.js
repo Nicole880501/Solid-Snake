@@ -1,6 +1,8 @@
 const express = require('express')
 const http = require('http')
 const socketIo = require('socket.io')
+const { createClient } = require('redis')
+const { createAdapter } = require('@socket.io/redis-adapter')
 const { onConnection, gameLoop, startWeatherCycle } = require('./controllers/gameController')
 const { errorHandler, socketErrorHandler } = require('./utils/errorHandler')
 
@@ -8,12 +10,16 @@ const app = express()
 const path = require('path')
 const server = http.createServer(app)
 const io = socketIo(server)
+const pubClient = createClient({ url: process.env.REDIS_URL })
+const subClient = pubClient.duplicate()
 
 const dotenv = require('dotenv')
 dotenv.config()
 
 const userRoutes = require('./routes/user')
 const recordRoutes = require('./routes/record')
+
+io.adapter(createAdapter(pubClient, subClient))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
