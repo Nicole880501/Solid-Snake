@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-undef
-const socket = io({
-  transports: ['websocket']
-})
+const socket = io('https://e055339.com')
 
 const canvas = document.getElementById('gameCanvas')
 const ctx = canvas.getContext('2d')
