@@ -8,7 +8,6 @@ const {
 } = require('../models/game')
 const { getUser, updateUserLevel } = require('../models/user')
 const { createRecord } = require('../models/record')
-const { createClient } = require('redis')
 
 const INITIAL_SNAKE_LENGTH = 4
 const DEFAULT_INTERVAL = 100
@@ -19,10 +18,6 @@ const COOLDOWN_DURATION = 20000
 const WEATHER_DURATION = 20000
 
 const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
-
-// Redis client
-const redisClient = createClient({ url: process.env.REDIS_URL })
-redisClient.connect()
 
 function onConnection (socket) {
   console.log('New player connected:', socket.id)
@@ -72,7 +67,6 @@ function onConnection (socket) {
           }
         }, 3000)
       }
-      await saveGameStateToRedis()
     } catch (err) {
       console.error('JWT verification failed:', err)
     }
@@ -98,7 +92,6 @@ function onConnection (socket) {
       ) {
         gameState.players[socket.id].direction = newDirection
       }
-      await saveGameStateToRedis()
     } catch (error) {
       console.error('plz press start game:', error)
     }
@@ -121,7 +114,6 @@ function onConnection (socket) {
           }, COOLDOWN_DURATION)
         }, ACCELERATE_DURATION)
       }
-      await saveGameStateToRedis()
     } catch (error) {
       console.log('something wrong:', error)
     }
@@ -153,7 +145,6 @@ function onConnection (socket) {
         console.log('failed to create record:', error)
       }
     }
-    await saveGameStateToRedis()
   })
 }
 
@@ -183,7 +174,6 @@ async function handlePlayerDeath (playerId) {
         death_y: deathPosition.y
       })
       delete gameState.players[playerId]
-      await saveGameStateToRedis()
     } catch (error) {
       console.log('failed to create record:', error)
     }
@@ -201,7 +191,6 @@ function startWeatherCycle (io) {
 
     io.sockets.emit('weatherChange', gameState.weather)
     currentWeatherIndex = (currentWeatherIndex + 1) % WEATHER_TYPES.length
-    saveGameStateToRedis()
   }, WEATHER_DURATION)
 }
 
@@ -258,7 +247,7 @@ function addExperience (player, experience) {
   }
 }
 
-async function gameLoop (io) {
+function gameLoop (io) {
   const playersToRemove = []
   const headCollisions = []
   const fruitMap = new Map()
@@ -357,23 +346,10 @@ async function gameLoop (io) {
   }, 1000)
 
   io.sockets.emit('gameState', gameState)
-  await saveGameStateToRedis()
-}
-
-async function saveGameStateToRedis () {
-  await redisClient.set('gameState', JSON.stringify(gameState))
-}
-
-async function loadGameStateFromRedis () {
-  const data = await redisClient.get('gameState')
-  if (data) {
-    Object.assign(gameState, JSON.parse(data))
-  }
 }
 
 module.exports = {
   onConnection,
   gameLoop,
-  startWeatherCycle,
-  loadGameStateFromRedis
+  startWeatherCycle
 }
