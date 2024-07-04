@@ -19,7 +19,9 @@ dotenv.config()
 const userRoutes = require('./routes/user')
 const recordRoutes = require('./routes/record')
 
-io.adapter(createAdapter(pubClient, subClient))
+Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+  io.adapter(createAdapter(pubClient, subClient))
+})
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
