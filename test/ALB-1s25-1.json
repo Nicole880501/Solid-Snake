@@ -1,0 +1,278 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.0": 750,
+      "vusers.created": 750,
+      "errors.xhr post error": 362,
+      "vusers.failed": 713,
+      "engine.socketio.emit": 159,
+      "errors.xhr poll error": 351,
+      "vusers.completed": 37
+    },
+    "rates": {
+      "engine.socketio.emit_rate": 8
+    },
+    "firstCounterAt": 1720407253814,
+    "firstHistogramAt": 1720407265882,
+    "lastCounterAt": 1720407294876,
+    "lastHistogramAt": 1720407294876,
+    "firstMetricAt": 1720407253814,
+    "lastMetricAt": 1720407294876,
+    "period": 1720407290000,
+    "summaries": {
+      "vusers.session_length": {
+        "min": 11353.5,
+        "max": 12529.3,
+        "count": 37,
+        "mean": 11470.9,
+        "p50": 11501.8,
+        "median": 11501.8,
+        "p75": 11501.8,
+        "p90": 11501.8,
+        "p95": 11734.2,
+        "p99": 11734.2,
+        "p999": 11734.2
+      }
+    },
+    "histograms": {
+      "vusers.session_length": {
+        "min": 11353.5,
+        "max": 12529.3,
+        "count": 37,
+        "mean": 11470.9,
+        "p50": 11501.8,
+        "median": 11501.8,
+        "p75": 11501.8,
+        "p90": 11501.8,
+        "p95": 11734.2,
+        "p99": 11734.2,
+        "p999": 11734.2
+      }
+    }
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.0": 148,
+        "vusers.created": 148,
+        "errors.xhr post error": 47,
+        "vusers.failed": 93,
+        "engine.socketio.emit": 22,
+        "errors.xhr poll error": 46
+      },
+      "rates": {
+        "engine.socketio.emit_rate": 15
+      },
+      "engine.socketio.emit_rate": null,
+      "firstCounterAt": 1720407253814,
+      "lastCounterAt": 1720407259988,
+      "firstMetricAt": 1720407253814,
+      "lastMetricAt": 1720407259988,
+      "period": "1720407250000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.0": 250,
+        "vusers.created": 250,
+        "errors.xhr poll error": 108,
+        "vusers.failed": 236,
+        "errors.xhr post error": 128,
+        "engine.socketio.emit": 58,
+        "vusers.completed": 3
+      },
+      "rates": {
+        "engine.socketio.emit_rate": 15
+      },
+      "engine.socketio.emit_rate": null,
+      "firstCounterAt": 1720407260028,
+      "firstHistogramAt": 1720407265882,
+      "lastCounterAt": 1720407269979,
+      "lastHistogramAt": 1720407267376,
+      "firstMetricAt": 1720407260028,
+      "lastMetricAt": 1720407269979,
+      "period": "1720407260000",
+      "summaries": {
+        "vusers.session_length": {
+          "min": 11403,
+          "max": 11445,
+          "count": 3,
+          "mean": 11420.2,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11501.8,
+          "p95": 11501.8,
+          "p99": 11501.8,
+          "p999": 11501.8
+        }
+      },
+      "histograms": {
+        "vusers.session_length": {
+          "min": 11403,
+          "max": 11445,
+          "count": 3,
+          "mean": 11420.2,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11501.8,
+          "p95": 11501.8,
+          "p99": 11501.8,
+          "p999": 11501.8
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.0": 250,
+        "vusers.created": 250,
+        "errors.xhr poll error": 118,
+        "vusers.failed": 240,
+        "errors.xhr post error": 122,
+        "engine.socketio.emit": 46,
+        "vusers.completed": 13
+      },
+      "rates": {
+        "engine.socketio.emit_rate": 17
+      },
+      "engine.socketio.emit_rate": null,
+      "firstCounterAt": 1720407270010,
+      "firstHistogramAt": 1720407270093,
+      "lastCounterAt": 1720407279998,
+      "lastHistogramAt": 1720407279482,
+      "firstMetricAt": 1720407270010,
+      "lastMetricAt": 1720407279998,
+      "period": "1720407270000",
+      "summaries": {
+        "vusers.session_length": {
+          "min": 11353.5,
+          "max": 11446.2,
+          "count": 13,
+          "mean": 11392.3,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11501.8,
+          "p95": 11501.8,
+          "p99": 11501.8,
+          "p999": 11501.8
+        }
+      },
+      "histograms": {
+        "vusers.session_length": {
+          "min": 11353.5,
+          "max": 11446.2,
+          "count": 13,
+          "mean": 11392.3,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11501.8,
+          "p95": 11501.8,
+          "p99": 11501.8,
+          "p999": 11501.8
+        }
+      }
+    },
+    {
+      "counters": {
+        "errors.xhr poll error": 75,
+        "vusers.failed": 139,
+        "vusers.created_by_name.0": 102,
+        "vusers.created": 102,
+        "engine.socketio.emit": 33,
+        "vusers.completed": 11,
+        "errors.xhr post error": 64
+      },
+      "rates": {
+        "engine.socketio.emit_rate": 20
+      },
+      "engine.socketio.emit_rate": null,
+      "firstCounterAt": 1720407280026,
+      "firstHistogramAt": 1720407280561,
+      "lastCounterAt": 1720407289321,
+      "lastHistogramAt": 1720407289321,
+      "firstMetricAt": 1720407280026,
+      "lastMetricAt": 1720407289321,
+      "period": "1720407280000",
+      "summaries": {
+        "vusers.session_length": {
+          "min": 11380.6,
+          "max": 11639.5,
+          "count": 11,
+          "mean": 11456.4,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11501.8,
+          "p95": 11501.8,
+          "p99": 11501.8,
+          "p999": 11501.8
+        }
+      },
+      "histograms": {
+        "vusers.session_length": {
+          "min": 11380.6,
+          "max": 11639.5,
+          "count": 11,
+          "mean": 11456.4,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11501.8,
+          "p95": 11501.8,
+          "p99": 11501.8,
+          "p999": 11501.8
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.failed": 5,
+        "vusers.completed": 10,
+        "errors.xhr poll error": 4,
+        "errors.xhr post error": 1
+      },
+      "rates": {},
+      "firstCounterAt": 1720407290341,
+      "firstHistogramAt": 1720407290580,
+      "lastCounterAt": 1720407294876,
+      "lastHistogramAt": 1720407294876,
+      "firstMetricAt": 1720407290341,
+      "lastMetricAt": 1720407294876,
+      "period": "1720407290000",
+      "summaries": {
+        "vusers.session_length": {
+          "min": 11396.5,
+          "max": 12529.3,
+          "count": 10,
+          "mean": 11604.3,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11734.2,
+          "p95": 11734.2,
+          "p99": 11734.2,
+          "p999": 11734.2
+        }
+      },
+      "histograms": {
+        "vusers.session_length": {
+          "min": 11396.5,
+          "max": 12529.3,
+          "count": 10,
+          "mean": 11604.3,
+          "p50": 11501.8,
+          "median": 11501.8,
+          "p75": 11501.8,
+          "p90": 11734.2,
+          "p95": 11734.2,
+          "p99": 11734.2,
+          "p999": 11734.2
+        }
+      }
+    }
+  ]
+}

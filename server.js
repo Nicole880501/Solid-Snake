@@ -3,24 +3,35 @@ const http = require('http')
 const socketIo = require('socket.io')
 const { createClient } = require('redis')
 const { createAdapter } = require('@socket.io/redis-adapter')
-const { onConnection, gameLoop, startWeatherCycle } = require('./controllers/gameController')
+const { onConnection, gameLoop, startWeatherCycle, updateGameState, addPlayer, setPubClient } = require('./controllers/gameController')
+const { gameState } = require('./models/game')
 const { errorHandler, socketErrorHandler } = require('./utils/errorHandler')
+
+const DEFAULT_INTERVAL = 100
+const ACCELERATED_INTERVAL = 50
+const ACCELERATE_DURATION = 3000
+const COOLDOWN_DURATION = 20000
 
 const app = express()
 const path = require('path')
 const server = http.createServer(app)
 const io = socketIo(server)
-const pubClient = createClient({ url: process.env.REDIS_URL })
-const subClient = pubClient.duplicate()
 
 const dotenv = require('dotenv')
 dotenv.config()
+
+const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
+
+const pubClient = createClient({ url: process.env.REDIS_URL })
+const subClient = pubClient.duplicate()
 
 const userRoutes = require('./routes/user')
 const recordRoutes = require('./routes/record')
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient))
+
+  setPubClient(pubClient) // 设置 pubClient
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
@@ -61,14 +72,61 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   })
 
   io.on('connection', (socket) => {
-    onConnection(socket)
+    onConnection(socket) // 处理新连接
   })
 
-  setInterval(() => {
-    gameLoop(io)
-  }, 50)
+  if (isPrimaryServer) {
+    setInterval(() => {
+      gameLoop(io)
+    }, 50)
+    startWeatherCycle(io)
 
-  startWeatherCycle(io)
+    setInterval(() => {
+      pubClient.publish('gameStateUpdate', JSON.stringify(gameState))
+    }, 100) // 定期广播游戏状态
+
+    subClient.subscribe('playerJoined', (message) => {
+      const playerData = JSON.parse(message)
+      addPlayer(playerData) // 主服务器接收到玩家信息后将其加入游戏状态
+    })
+
+    subClient.subscribe('changeDirection', (message) => {
+      const { id, direction } = JSON.parse(message)
+      if (gameState.players[id]) {
+        gameState.players[id].direction = direction
+      }
+    })
+
+    subClient.subscribe('setSpeed', (message) => {
+      const { id } = JSON.parse(message)
+      const player = gameState.players[id]
+      if (player && !player.cooldown) {
+        player.accelerated = true
+        player.interval = ACCELERATED_INTERVAL
+        setTimeout(() => {
+          player.accelerated = false
+          player.interval = DEFAULT_INTERVAL
+          player.cooldown = true
+          setTimeout(() => {
+            player.cooldown = false
+          }, COOLDOWN_DURATION)
+        }, ACCELERATE_DURATION)
+      }
+    })
+
+    subClient.subscribe('playerDisconnected', (message) => {
+      const { id } = JSON.parse(message)
+      const player = gameState.players[id]
+      if (player) {
+        delete gameState.players[id]
+      }
+    })
+  } else {
+    subClient.subscribe('gameStateUpdate', (message) => {
+      const newState = JSON.parse(message)
+      updateGameState(newState)
+    })
+  }
 
   app.get('/*', async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', '404page.html'))
@@ -78,7 +136,8 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
 
   socketErrorHandler(server)
 
-  server.listen(process.env.PORT || 4000, () => {
-    console.log(`Server running on port ${process.env.PORT}`)
+  const PORT = process.env.PORT || 4000
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
   })
 })

@@ -19,6 +19,9 @@ const WEATHER_DURATION = 20000
 
 const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
 
+const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
+let pubClient
+
 function onConnection (socket) {
   console.log('New player connected:', socket.id)
   let onConnectionTime
@@ -37,7 +40,7 @@ function onConnection (socket) {
           initialSnake.push({ x: initialX, y: initialY })
         }
 
-        gameState.players[socket.id] = {
+        const playerData = {
           id: socket.id,
           name: user.name,
           x: initialX,
@@ -58,8 +61,15 @@ function onConnection (socket) {
           experience: user.experience
         }
 
+        gameState.players[socket.id] = playerData
+
         // Set player state based on current weather
         adjustPlayerStateForWeather(gameState.players[socket.id], gameState.weather)
+
+        if (!isPrimaryServer) {
+          // Send player information to the primary server
+          pubClient.publish('playerJoined', JSON.stringify(playerData))
+        }
 
         setTimeout(() => {
           if (gameState.players[socket.id]) {
@@ -91,9 +101,12 @@ function onConnection (socket) {
           player.lastMoveDirection !== 'up')
       ) {
         gameState.players[socket.id].direction = newDirection
+        if (!isPrimaryServer) {
+          pubClient.publish('changeDirection', JSON.stringify({ id: socket.id, direction: newDirection }))
+        }
       }
     } catch (error) {
-      console.error('plz press start game:', error)
+      console.error('Please press start game:', error)
     }
   })
 
@@ -103,6 +116,10 @@ function onConnection (socket) {
       if (!player.cooldown) {
         player.accelerated = true
         player.interval = ACCELERATED_INTERVAL
+
+        if (!isPrimaryServer) {
+          pubClient.publish('setSpeed', JSON.stringify({ id: socket.id }))
+        }
 
         setTimeout(() => {
           player.accelerated = false
@@ -115,7 +132,7 @@ function onConnection (socket) {
         }, ACCELERATE_DURATION)
       }
     } catch (error) {
-      console.log('something wrong:', error)
+      console.log('Something went wrong:', error)
     }
   })
 
@@ -141,8 +158,12 @@ function onConnection (socket) {
           death_y: deathPosition.y
         })
         delete gameState.players[socket.id]
+
+        if (!isPrimaryServer) {
+          pubClient.publish('playerDisconnected', JSON.stringify({ id: socket.id }))
+        }
       } catch (error) {
-        console.log('failed to create record:', error)
+        console.log('Failed to create record:', error)
       }
     }
   })
@@ -175,7 +196,7 @@ async function handlePlayerDeath (playerId) {
       })
       delete gameState.players[playerId]
     } catch (error) {
-      console.log('failed to create record:', error)
+      console.log('Failed to create record:', error)
     }
   }
 }
@@ -345,11 +366,29 @@ function gameLoop (io) {
     })
   }, 1000)
 
-  io.sockets.emit('gameState', gameState)
+  if (isPrimaryServer) {
+    io.sockets.emit('gameState', gameState) // 主服务器广播游戏状态
+  }
+}
+
+function updateGameState (newState) {
+  Object.assign(gameState, newState)
+}
+
+function addPlayer (playerData) {
+  gameState.players[playerData.id] = playerData
+  adjustPlayerStateForWeather(gameState.players[playerData.id], gameState.weather)
+}
+
+function setPubClient (client) {
+  pubClient = client
 }
 
 module.exports = {
   onConnection,
   gameLoop,
-  startWeatherCycle
+  startWeatherCycle,
+  updateGameState,
+  addPlayer,
+  setPubClient
 }
