@@ -23,11 +23,13 @@
 #### CPU 使用量
 
 **無開啟 ALB 情況下**: 測試期間，CPU 使用量最高在 84.7%
+
 **開啟 ALB 情況下**: 測試期間，若開啟 Sticky Session ，有機率其中一台會掛掉， 另一台 CPU 使用量最高在 30%
 
 #### 記憶體使用量
 
 **無開啟 ALB 情況下**: 測試期間，記憶體使用量最高在 820MB
+
 **開啟 ALB 情況下**: 測試期間，若開啟 Sticky Session ，有機率其中一台會掛掉， 另一台記憶體使用量最高在 300MB
 
 ### 測試圖
@@ -36,13 +38,21 @@
 
 #### Metric
 
+**無開啟 ALB 情況下**:
+
 ![無開啟 ALB](./test/1s20.png)
+
+**開啟 ALB 情況下**:
 
 ![有開啟 ALB](./test/alb.png)
 
 #### vuser.session_length
 
+**無開啟 ALB 情況下**:
+
 ![無開啟 ALB](./test/1s20%20session.png)
+
+**開啟 ALB 情況下**:
 
 ![有開啟 ALB](./test/alb%20session.png)
 

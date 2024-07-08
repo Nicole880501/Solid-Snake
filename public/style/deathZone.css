@@ -8,6 +8,14 @@
     font-size: 2rem;
     margin-bottom: 20px;
   }
+  ul.description {
+    font-size: 1rem;
+    text-align: left;
+    max-width: 800px;
+    margin-bottom: 20px;
+    list-style-type: disc;
+    padding-left: 20px;
+  }
   canvas {
     border: 5px solid #00ff00;
     width: 1600px;
