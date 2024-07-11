@@ -11,6 +11,15 @@ function signout () {
   window.location.href = '/'
 }
 
+function updateHighestTitle (text) {
+  const highestTitle = document.getElementById('highest-title')
+  highestTitle.style.opacity = 0
+  setTimeout(() => {
+    highestTitle.innerText = text
+    highestTitle.style.opacity = 1
+  }, 300)
+}
+
 async function fetchPersonalHighestRecord (type) {
   try {
     const token = getCookie('access_token')
@@ -19,73 +28,63 @@ async function fetchPersonalHighestRecord (type) {
       document.getElementById('sign-in-link').style.display = 'inline'
       document.getElementById('sign-out-link').style.display = 'none'
       document.getElementById('analytics-link').style.display = 'none'
-      document.getElementById('highest-title').innerHTML = 'You Are Not Signin'
+      updateHighestTitle('You Are Not Signed In')
     } else {
       document.getElementById('sign-in-link').style.display = 'none'
       document.getElementById('sign-out-link').style.display = 'inline'
       document.getElementById('analytics-link').style.display = 'inline'
+
+      let response, data
       if (type === 'score') {
-        const response = await fetch('/record/playerScore', {
+        response = await fetch('/record/playerScore', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         })
-        const data = await response.json()
-        console.log(data)
-        document.getElementById(
-          'highest-title'
-        ).innerHTML = `${data.user_name}, Your Highest Score: ${data.highest_score}`
+        data = await response.json()
+        updateHighestTitle(`${data.user_name}, Your Highest Score: ${data.highest_score}`)
       } else if (type === 'level') {
-        const response = await fetch('/user/level', {
+        response = await fetch('/user/level', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         })
-        const data = await response.json()
-        console.log(data)
-        document.getElementById(
-          'highest-title'
-        ).innerHTML = `${data.name}, Your Level: ${data.level}`
+        data = await response.json()
+        updateHighestTitle(`${data.name}, Your Level: ${data.level}`)
       } else if (type === 'kill') {
-        const response = await fetch('/record/playerKill', {
+        response = await fetch('/record/playerKill', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         })
-        const data = await response.json()
-        document.getElementById(
-          'highest-title'
-        ).innerHTML = `${data.user_name}, Your Highest Kill: ${data.highest_kill}`
+        data = await response.json()
+        updateHighestTitle(`${data.user_name}, Your Highest Kill: ${data.highest_kill}`)
       } else if (type === 'time') {
-        const response = await fetch('/record/playerTime', {
+        response = await fetch('/record/playerTime', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         })
-        const data = await response.json()
-        document.getElementById(
-          'highest-title'
-        ).innerHTML = `${data.user_name}, Your Highest Playtime: ${data.highest_time}'s`
+        data = await response.json()
+        updateHighestTitle(`${data.user_name}, Your Highest Playtime: ${data.highest_time}`)
       } else if (type === 'moves') {
-        const response = await fetch('/record/playerMove', {
+        response = await fetch('/record/playerMove', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         })
-        const data = await response.json()
-        document.getElementById(
-          'highest-title'
-        ).innerHTML = `${data.user_name}, Your Highest Moves: ${data.highest_move} steps`
+        data = await response.json()
+        updateHighestTitle(`${data.user_name}, Your Highest Moves: ${data.highest_move} steps`)
       }
     }
   } catch (error) {
@@ -124,13 +123,13 @@ async function fetchRanking (type) {
         <td>${players.data[i].play_time}'s</td>
         <td>${players.data[i].total_moves} steps</td>
         <td>${players.data[i].timestamp}</td>
-            `
+      `
       rankingTable.appendChild(row)
-
-      fetchPersonalHighestRecord(type)
     }
+
+    fetchPersonalHighestRecord(type)
   } catch (error) {
-    console.error('Error fetch ranking:', error)
+    console.error('Error fetching ranking:', error)
   }
 }
 
