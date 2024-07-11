@@ -28,8 +28,6 @@ function generateRainbowFruit () {
       gameState.rainbowFruits.splice(index, 1)
     }
   }, 5000)
-
-  setTimeout(generateRainbowFruit, Math.random() * 10000 + 5000)
 }
 
 function checkCollision (player, fruit) {

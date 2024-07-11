@@ -19,7 +19,7 @@ const WEATHER_DURATION = 20000
 
 const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
 
-const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
+const isPrimaryServer = true
 let pubClient
 
 function onConnection (socket) {
@@ -217,11 +217,18 @@ function startWeatherCycle (io) {
 
 function adjustGameStateForWeather (weather) {
   gameState.rainbowFruits = []
+
+  setInterval(() => {
+    if (gameState.rainbowFruits.length < 6) {
+      generateRainbowFruit()
+    }
+  }, Math.random() * 10000 + 5000)
+
   if (weather === 'sunny') {
     gameState.fruits = Array(10).fill().map(generateFruit)
     gameState.badFruits = [generateFruit()]
     gameState.trapFruits = Array(10).fill().map(generateFruit)
-    generateRainbowFruit()
+
     for (const playerId in gameState.players) {
       gameState.players[playerId].interval = DEFAULT_INTERVAL
     }
@@ -229,7 +236,7 @@ function adjustGameStateForWeather (weather) {
     gameState.fruits = Array(20).fill().map(generateFruit)
     gameState.badFruits = [generateFruit()]
     gameState.trapFruits = Array(10).fill().map(generateFruit)
-    generateRainbowFruit()
+
     for (const playerId in gameState.players) {
       gameState.players[playerId].interval = SLOW_INTERVAL
     }
