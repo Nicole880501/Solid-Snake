@@ -19,7 +19,7 @@ const WEATHER_DURATION = 20000
 
 const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
 
-const isPrimaryServer = process.env.IS_PRIMARY === 'true'
+const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
 let pubClient
 
 function onConnection (socket) {
