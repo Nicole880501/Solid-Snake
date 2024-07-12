@@ -1,28 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solid Snake - Home</title>
-    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp" />
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./style/common.css" />
-    <link rel="stylesheet" href="./style/index.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style/common.css">
+    <link rel="stylesheet" href="./style/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div class="container">
+    <canvas id="backgroundCanvas"></canvas>
+    <div class="container hero">
       <h1>Solid Snake</h1>
       <h2>Multiplayer Online Snake Game</h2>
-      <button class="btn btn-primary">
-        Start Playing
-      </button>
+      <button class="btn btn-primary">Start Playing</button>
+    </div>
+    <div class="introduce container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>How To Play</h2>
+          <p>
+            Join the ultimate snake battle! Devour the fruits to grow your snake and become the largest on the field. 
+            But beware, other players are trying to do the same! 
+            Use your skills and strategy to navigate through the arena without crashing into others. 
+            Control your snake with the arrow keys ⬆ ⬇ ⬅ ⮕ , and press Z to unleash a burst of speed when you need it most. 
+          </p>
+        </div>
+        <div class="col-md-6">
+          <img src="./images/favicon.webp" alt="icon" class="img-fluid">
+        </div>
+      </div>
+    </div>
+    <div class="introduce-right container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Ranking</h2>
+          <p>You can </p>
+        </div>
+        <div class="col-md-6">
+          <img src="./images/favicon.webp" alt="icon" class="img-fluid">
+        </div>
+      </div>
+    </div>
+    <div class="introduce container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Analytics</h2>
+          <p>Review your game statistics, including level, total score, average score per game, highest score per game, total kills, K/D ratio, most used skin, and more.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="./images/analytics.gif" alt="Analytics" class="img-fluid">
+        </div>
+      </div>
+    </div>
+    <div class="play-now container">
+      <h2>Play Now!</h2>
+      <p>Are you ready to dominate the leaderboard and become the champion? Let the game begin!</p>
+      <button class="btn btn-primary">Start Playing</button>
     </div>
     <script src="./js/index.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -30,3 +66,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
+

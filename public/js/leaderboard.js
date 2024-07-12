@@ -7,7 +7,6 @@ function getCookie (name) {
 // eslint-disable-next-line no-unused-vars
 function signout () {
   document.cookie = 'access_token=; Max-Age=0; path=/'
-
   window.location.href = '/'
 }
 
@@ -113,6 +112,13 @@ async function fetchRanking (type) {
 
     for (let i = 0; i < players.data.length; i++) {
       const row = document.createElement('tr')
+      if (i === 0) {
+        row.classList.add('gold')
+      } else if (i === 1) {
+        row.classList.add('silver')
+      } else if (i === 2) {
+        row.classList.add('bronze')
+      }
       row.innerHTML = `
         <td>${i + 1}</td>
         <td>${players.data[i].user_name}</td>
