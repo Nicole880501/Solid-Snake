@@ -27,4 +27,25 @@ jobs:
             npm install
             pm2 restart develop
           EOF
+  deploy-to-server2:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: SET SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with: 
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: deploy to ec2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-210-168-242.ap-southeast-2.compute.amazonaws.com << 'EOF'
+            cd personalProject/
+            git checkout develop
+            git pull origin develop
+            npm install
+            pm2 restart develop
+          EOF
 
