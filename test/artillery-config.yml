@@ -2,9 +2,10 @@ config:
   target: "https://e055339.com"
   phases:
     - duration: 30
-      arrivalRate: 25
+      arrivalRate: 30
   engines:
-    socketio-v3: {}
+    socketio-v3:
+      transports: ["websocket"]
   metrics:
     capture:
       - jpath: "$.responseTime"
@@ -16,7 +17,7 @@ scenarios:
     flow:
       - emit:
           channel: "startGame"
-          data: { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RyZXNzbWFuIiwiaWF0IjoxNzIwNDA3MDA1LCJleHAiOjE3MjA3NjcwMDV9.Iwc3dRic0RxH3Aahv3QqL3DvrezFYBhrz7kMR8pup3M", color: "white" }
+          data: { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RyZXNzbWFuIiwiaWF0IjoxNzIwODM2ODI1LCJleHAiOjE3MjExOTY4MjV9.AA_opp3ngOCF5phKzxrgHwnQK7CKo0fyF_OVtjXSrd8", color: "white" }
           response:
             - capture:
                 json: "$.responseTime"
