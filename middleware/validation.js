@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 exports.signupValidation = (req, res, next) => {
   const schema = Joi.object({
-    name: Joi.string().number().min(3).max(50).required(),
+    name: Joi.string().pattern(/^[0-9a-zA-Z\s]+$/).min(3).max(50).required(),
     email: Joi.string().min(6).max(50).required().email(),
     password: Joi.string().min(6).max(255).required()
   })
