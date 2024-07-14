@@ -2,11 +2,27 @@
 
 ## 多人線上貪食蛇遊戲
 
-16-bit 風格的貪食蛇遊戲，功能包含: 即時對戰系統、登入系統、等級系統、排行榜、遊戲生涯紀錄
+專案網址: [Solid Snake](https://e055339.com)
+
+16-bit 風格的貪食蛇遊戲，功能包含: 即時對戰系統、登入系統、排行榜、遊戲生涯紀錄
+
+遊玩畫面:
+
+![gameplay](./public/images/game.gif)
+
+## 專案使用技術&架構圖
+
+- **前端**: HTML, CSS, Javascript
+- **後端**: Node.js
+- **技術亮點**: Socket.io
+- **CI/CD**: GitHub Actions
+- **部屬環境**: AWS EC2, RDS, ALB, ElastiCache
+
+![架構圖](./asset/solid%20snake架構圖2.drawio.png)
 
 ## 壓力測試報告
 
-使用 [Artillery](https://www.artillery.io/) 針對 socket.io `startGame` event 進行壓力測試，目的是測試伺服器最高能承受多少玩家同時加入。測試報告如下：
+使用 [Artillery](https://www.artillery.io/) 針對 Socket.io `startGame` event 進行壓力測試，目的是測試伺服器最高能承受多少玩家同時加入。測試報告如下：
 
 ### 測試環境
 
