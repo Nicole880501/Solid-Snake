@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Solid Snake - Leaderboard</title>
+    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp" />
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -23,6 +24,7 @@
         <a href="/game">Game</a>
         <a href="/leaderboard">Ranking</a>
         <a href="/analytics" id="analytics-link">Analytics</a>
+        <a href="/deathZone">Death Zone</a>
         <a href="/signin" id="sign-in-link">Sign In</a>
         <a href="/" id="sign-out-link" onclick="signout()">Sign Out</a>
       </nav>
@@ -40,12 +42,12 @@
           Score
         </button>
         <button
-        type="button"
-        class="btn btn-primary"
-        onclick="fetchRanking('level')"
-      >
-        Level
-      </button>
+          type="button"
+          class="btn btn-primary"
+          onclick="fetchRanking('level')"
+        >
+          Level
+        </button>
         <button
           type="button"
           class="btn btn-primary"
@@ -68,22 +70,24 @@
           Moves
         </button>
       </div>
-      <table class="table table-dark table-striped">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Level</th>
-            <th>Score</th>
-            <th>Kill</th>
-            <th>Skin</th>
-            <th>Play Time</th>
-            <th>Moves</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody id="ranking_table"></tbody>
-      </table>
+      <div id="table-responsive">
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Level</th>
+              <th>Score</th>
+              <th>Kill</th>
+              <th>Skin</th>
+              <th>Play Time</th>
+              <th>Moves</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="ranking_table"></tbody>
+        </table>
+      </div>
     </div>
     <script src="./js/leaderboard.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -91,3 +95,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
+

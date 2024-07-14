@@ -7,17 +7,17 @@ document
     const password = document.getElementById('password').value
 
     if (playerName.length < 3) {
-      window.alert('Player name must be at least 3 characters long')
+      showAlert('Player name must be at least 3 characters long', 'danger')
       return
     }
 
     if (email.length < 6) {
-      window.alert('Email must be at least 6 character long')
+      showAlert('Email must be at least 6 character long', 'danger')
       return
     }
 
     if (password.length < 6) {
-      window.alert('Password must be at least 6 character long')
+      showAlert('Password must be at least 6 character long', 'danger')
       return
     }
 
@@ -35,15 +35,30 @@ document
       })
 
       if (response.ok) {
-        window.alert('Registration successful! Redirecting to login page...')
-        window.location.href = '/signin'
-        // You can handle the success case here, such as redirecting the user
+        showAlert("Registration successful! Redirecting to login page 3's later...", 'success')
+        setTimeout(() => {
+          window.location.href = '/game'
+        }, 3000)
       } else {
         const errorData = await response.json()
-        window.alert(`Error: ${errorData.error}`)
+        showAlert(`Error: ${errorData.error}`, 'danger')
       }
     } catch (error) {
       console.error('Error:', error)
-      window.alert('An error occurred while signup in.')
+      showAlert('An error occurred while signup in.', 'danger')
     }
   })
+
+function showAlert (message, type) {
+  const alertContainer = document.getElementById('alert-container')
+  const alert = document.createElement('div')
+  alert.className = `alert alert-${type} alert-dismissible fade show`
+  alert.role = 'alert'
+  alert.innerHTML = `
+          ${message}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      `
+  alertContainer.appendChild(alert)
+}

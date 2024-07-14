@@ -1,32 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solid Snake - Home</title>
-    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp" />
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./style/common.css" />
-    <link rel="stylesheet" href="./style/index.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style/common.css">
+    <link rel="stylesheet" href="./style/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div class="container">
+    <canvas id="backgroundCanvas"></canvas>
+    <div class="container hero">
       <h1>Solid Snake</h1>
       <h2>Multiplayer Online Snake Game</h2>
-      <button class="btn btn-primary">
-        Start Playing
-      </button>
+      <button class="btn btn-primary">Start Playing</button>
     </div>
+    <div class="introduce container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>How To Play</h2>
+          <p>
+            <strong>Game Basics:</strong> Control your snake with ⬆ ⬇ ⬅ ⮕. Eat fruits to grow and avoid other players. Press Z to boost speed.
+          </p>
+          <p>
+            <strong>Fruit System:</strong> Regular fruits increase length and score. Special fruits provide unique abilities.
+          </p>
+          <p>
+            <strong>Weather System:</strong> Dynamic weather affects gameplay. Adapt to conditions like rain and snow.
+          </p>
+        </div>
+        <div class="col-md-6">
+          <img src="./images/game.gif" alt="icon" class="img-fluid" style="border: none; max-width: 120% ; width: 120%;">
+        </div>
+      </div>
+    </div>
+    <div class="introduce-right container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Ranking</h2>
+          <p>
+            Compete against the world's top players and climb the rankings in various categories such as score, level, and kills.
+            Test your skills and strive to be the best in each category. The leaderboard updates regularly, so keep playing and improve your ranking to become the ultimate champion!
+          </p>
+        </div>
+        <div class="col-md-6">
+          <img src="./images/ranking.gif" alt="icon" class="img-fluid">
+        </div>
+      </div>
+    </div>
+    <div class="introduce container">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Analytics</h2>
+          <p>Review your game statistics, including level, total score, average score per game, highest score per game, total kills, K/D ratio, most used skin, and more.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="./images/analytics.gif" alt="Analytics" class="img-fluid">
+        </div>
+      </div>
+    </div>
+    <div class="play-now container">
+      <h2>Play Now!</h2>
+      <p>Are you ready to dominate the leaderboard and become the champion? Let the game begin!</p>
+      <button class="btn btn-primary">Start Playing</button>
+    </div>
+    <footer>
+      <br />
+    </footer>
     <script src="./js/index.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
+

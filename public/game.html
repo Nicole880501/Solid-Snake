@@ -1,42 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solid Snake - Room</title>
-    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp" />
-    <link rel="stylesheet" href="./style/header.css" />
-    <link rel="stylesheet" href="./style/common.css" />
-    <link rel="stylesheet" href="./style/game.css" />
-  </head>
-  <body>
+    <link rel="shortcut icon" href="./images/favicon.webp" type="image/webp">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style/header.css">
+    <link rel="stylesheet" href="./style/common.css">
+    <link rel="stylesheet" href="./style/game.css">
+</head>
+<body>
     <header>
-      <div class="logo"><a href="/">Solid Snake</a></div>
-      <nav>
-        <a href="/game">Game</a>
-        <a href="/leaderboard">Ranking</a>
-        <a href="/analytics" id="analytics-link">Analytics</a>
-        <a href="/signin" id="sign-in-link">Sign In</a>
-        <a href="/" id="sign-out-link" onclick="signout()">Sign Out</a>
-      </nav>
+        <div class="logo"><a href="/">Solid Snake</a></div>
+        <nav>
+            <a href="/game">Game</a>
+            <a href="/leaderboard">Ranking</a>
+            <a href="/analytics" id="analytics-link">Analytics</a>
+            <a href="/deathZone">Death Zone</a>
+            <a href="/signin" id="sign-in-link">Sign In</a>
+            <a href="/" id="sign-out-link" onclick="signout()">Sign Out</a>
+        </nav>
     </header>
     <div id="controls">
-      <label for="color">Choose snake color:</label>
-      <select id="color">
-        <option value="white">White</option>
-        <option value="rainbow">Rainbow</option>
-        <option value="blue">Blue</option>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="yellow">Yellow</option>
-      </select>
-      <button id="startButton">Start Game</button>
+        <label for="color">Choose snake color:</label>
+        <select id="color">
+            <option value="white">White</option>
+            <option value="rainbow">Rainbow</option>
+            <option value="blue">Blue</option>
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+        </select>
+        <button id="startButton">Start Game</button>
+        <div id="alert-container"></div>
     </div>
     <div id="game_container">
-      <canvas id="gameCanvas" width="1600" height="800"></canvas>
-      <div id="leaderboard"></div>
+        <canvas id="gameCanvas" width="1600" height="800"></canvas>
+        <div id="leaderboard"></div>
     </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="deathModal" tabindex="-1" aria-labelledby="deathModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deathModalLabel" style="margin-left: 7rem;">You Are Dead</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="restartGame()" style="color: white;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="deathMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="restartGame()">Try Again</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="goToLeaderboard()">Go to Leaderboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/client.js"></script>
-  </body>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 </html>

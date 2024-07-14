@@ -11,7 +11,8 @@ const {
   getPlayerGame,
   getPlayerTime,
   getPlayerMove,
-  getPlayerSkin
+  getPlayerSkin,
+  getDeathZone
 } = require('../controllers/recordController')
 
 router.get('/maxScore', getPersonalMaxScore)
@@ -37,5 +38,7 @@ router.get('/playerTime', getPlayerTime)
 router.get('/playerMove', getPlayerMove)
 
 router.get('/playerSkin', getPlayerSkin)
+
+router.get('/deathZone', getDeathZone)
 
 module.exports = router

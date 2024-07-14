@@ -1,19 +1,69 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Press Start 2P', cursive;
+}
+
+#backgroundCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
 .container {
+  z-index: 1;
+}
+
+.hero {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  text-align: center;
 }
+
 h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
 }
+
 h2 {
   font-size: 1.5rem;
   margin-bottom: 2rem;
 }
+
 .btn {
   font-family: "Press Start 2P", cursive;
   font-size: 1rem;
+}
+
+.introduce, .introduce-right {
+  padding: 50px 0;
+}
+
+.introduce .row, .introduce-right .row {
+  display: flex;
+  align-items: center;
+}
+
+.introduce img, .introduce-right img {
+  border: 2px solid #00ff00;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+
+.introduce-right .row {
+  flex-direction: row-reverse;
+}
+
+.play-now {
+  text-align: center;
+  margin-top: 10rem; 
 }

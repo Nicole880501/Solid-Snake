@@ -88,9 +88,9 @@ async function fetchTotalTime () {
     const data = await response.json()
     document.getElementById('total_time').innerHTML = `
         <h2>Total Playtime</h2>
-        <h3 class="stat-value">${data.total_time}</h3>
-        <p>Max Playtime: ${data.highest_time}</p>
-        <p>Avg Playtime: ${data.average_time}</p>
+        <h3 class="stat-value">${data.total_time}'s</h3>
+        <p>Max Playtime: ${data.highest_time}'s</p>
+        <p>Avg Playtime: ${data.average_time}'s</p>
         `
   } catch (error) {
     console.error('Error fetching time: error', error)
