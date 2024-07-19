@@ -12,11 +12,10 @@
 
 ## 專案使用技術&架構圖
 
-- **前端**: HTML, CSS, Javascript
-- **後端**: Node.js
-- **技術亮點**: Socket.io
+- **前端**: HTML, CSS, Javascript, Socket.io
+- **後端**: Node.js, Socket.io
 - **CI/CD**: GitHub Actions
-- **部屬環境**: AWS EC2, RDS, ALB, ElastiCache
+- **部署環境**: AWS EC2, RDS, ALB, ElastiCache
 
 ![架構圖](./asset/solid%20snake架構圖2.drawio.png)
 

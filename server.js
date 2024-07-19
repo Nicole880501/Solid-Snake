@@ -31,7 +31,7 @@ const recordRoutes = require('./routes/record')
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient))
 
-  setPubClient(pubClient) // 设置 pubClient
+  setPubClient(pubClient)
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
@@ -72,7 +72,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   })
 
   io.on('connection', (socket) => {
-    onConnection(socket) // 处理新连接
+    onConnection(socket)
   })
 
   if (isPrimaryServer) {
@@ -87,7 +87,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
 
     subClient.subscribe('playerJoined', (message) => {
       const playerData = JSON.parse(message)
-      addPlayer(playerData) // 主服务器接收到玩家信息后将其加入游戏状态
+      addPlayer(playerData)
     })
 
     subClient.subscribe('changeDirection', (message) => {

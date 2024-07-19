@@ -91,7 +91,6 @@ function movePlayer (player, gameState) {
       break
   }
 
-  // Wrap around logic
   if (newHead.x < 0) {
     newHead.x = WIDTH - 1
   } else if (newHead.x >= WIDTH) {
@@ -114,16 +113,15 @@ function movePlayer (player, gameState) {
     player.snake.pop()
   }
 
-  // Check collisions only if not invincible
   if (
     !player.invincible &&
     (checkSelfCollision(player) ||
       checkOtherPlayersCollision(player, gameState))
   ) {
-    return false // Player is dead
+    return false
   }
 
-  return true // Player is alive
+  return true
 }
 
 module.exports = {

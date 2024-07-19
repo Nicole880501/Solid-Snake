@@ -39,7 +39,7 @@ async function fetchDeathRates () {
 
     const canvas = document.getElementById('deathRatesCanvas')
     const ctx = canvas.getContext('2d')
-    const scale = 20 // 假设每个区域大小为20x20
+    const scale = 20
 
     const maxDeathRate = Math.max(...data.map(d => d.death_count))
 

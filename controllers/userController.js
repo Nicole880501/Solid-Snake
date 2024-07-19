@@ -108,11 +108,9 @@ exports.googleCallback = async (req, res) => {
   const { code } = req.query
 
   try {
-    // 用授權碼換取 token
     const { tokens } = await client.getToken(code)
     client.setCredentials(tokens)
 
-    // 透過 Google API 取得用戶資訊
     const userInfo = await client.request({
       url: 'https://www.googleapis.com/oauth2/v3/userinfo'
     })
@@ -128,27 +126,26 @@ exports.googleCallback = async (req, res) => {
     const existingUser = await getUserByEmail(userInfo.data.email)
     if (existingUser) {
       if (existingUser.provider === 'native') {
-        res.status(403).json({ error: '此信箱已在本地註冊過' })
+        res.status(403).json({ error: 'email has been signup locally' })
       } else {
         const EXPIRE_TIME = 600 * 600
         const token = jwt.sign({ name: userData.name }, process.env.JWT_KEY, {
           expiresIn: EXPIRE_TIME
         })
 
-        res.cookie('access_token', token).status(200).redirect('/game') // 跳轉回前端頁面
+        res.cookie('access_token', token).status(200).redirect('/game')
       }
       return
     }
 
     await createUser(userData)
-    console.log('已儲存新google用戶')
 
     const EXPIRE_TIME = 60 * 60
     const token = jwt.sign({ name: userData.name }, process.env.JWT_KEY, {
       expiresIn: EXPIRE_TIME
     })
 
-    res.cookie('access_token', token).status(200).redirect('/game') // 跳轉回前端頁面
+    res.cookie('access_token', token).status(200).redirect('/game')
   } catch (error) {
     console.error(error)
     res.status(400).send('Error fetching Google user info')
