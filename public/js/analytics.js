@@ -130,7 +130,6 @@ async function fetchMostUsedSkin () {
       }
     })
     const data = await response.json()
-    console.log(data)
     document.getElementById('fav_skin').innerHTML = `
         <h2>Most Used Skin</h2>
         <h3 class="stat-value">${data.skin}</h3>

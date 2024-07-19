@@ -24,7 +24,6 @@ document
         }, 3000)
       } else {
         const errorData = await response.json()
-        console.log(errorData)
         showAlert(`Error: ${errorData.error}`, 'danger')
       }
     } catch (error) {

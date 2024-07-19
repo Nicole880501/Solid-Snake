@@ -6,11 +6,12 @@ const { createAdapter } = require('@socket.io/redis-adapter')
 const { onConnection, gameLoop, startWeatherCycle, updateGameState, addPlayer, setPubClient } = require('./controllers/gameController')
 const { gameState } = require('./models/game')
 const { errorHandler, socketErrorHandler } = require('./utils/errorHandler')
-
-const DEFAULT_INTERVAL = 100
-const ACCELERATED_INTERVAL = 50
-const ACCELERATE_DURATION = 3000
-const COOLDOWN_DURATION = 20000
+const {
+  DEFAULT_INTERVAL,
+  ACCELERATED_INTERVAL,
+  ACCELERATE_DURATION,
+  COOLDOWN_DURATION
+} = require('./config/gameConstant')
 
 const app = express()
 const path = require('path')
@@ -83,7 +84,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
 
     setInterval(() => {
       pubClient.publish('gameStateUpdate', JSON.stringify(gameState))
-    }, 100) // 定期广播游戏状态
+    }, 100)
 
     subClient.subscribe('playerJoined', (message) => {
       const playerData = JSON.parse(message)
