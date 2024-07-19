@@ -1,7 +1,6 @@
 const express = require('express')
 const http = require('http')
 const socketIo = require('socket.io')
-const { createClient } = require('redis')
 const { createAdapter } = require('@socket.io/redis-adapter')
 const { onConnection, gameLoop, startWeatherCycle, updateGameState, addPlayer, setPubClient } = require('./controllers/gameController')
 const { gameState } = require('./models/game')
@@ -12,24 +11,21 @@ const {
   ACCELERATE_DURATION,
   COOLDOWN_DURATION
 } = require('./config/gameConstant')
+const { pubClient, subClient, connectRedisClients } = require('./service/redisClient')
+const dotenv = require('dotenv')
+dotenv.config()
 
 const app = express()
 const path = require('path')
 const server = http.createServer(app)
 const io = socketIo(server)
 
-const dotenv = require('dotenv')
-dotenv.config()
-
 const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
-
-const pubClient = createClient({ url: process.env.REDIS_URL })
-const subClient = pubClient.duplicate()
 
 const userRoutes = require('./routes/user')
 const recordRoutes = require('./routes/record')
 
-Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+connectRedisClients().then(() => {
   io.adapter(createAdapter(pubClient, subClient))
 
   setPubClient(pubClient)
@@ -46,6 +42,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'))
   })
 
+  // this route is for AWS load balancer check health state
   app.get('/health', async (req, res) => {
     res.status(200).send('ok')
   })
