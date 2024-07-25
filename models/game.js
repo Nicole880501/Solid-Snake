@@ -130,5 +130,7 @@ module.exports = {
   generateRainbowFruit,
   movePlayer,
   checkCollision,
-  checkHeadCollision
+  checkHeadCollision,
+  checkOtherPlayersCollision,
+  checkSelfCollision
 }
