@@ -17,7 +17,7 @@ scenarios:
     flow:
       - emit:
           channel: "startGame"
-          data: { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RyZXNzbWFuIiwiaWF0IjoxNzIwODM2ODI1LCJleHAiOjE3MjExOTY4MjV9.AA_opp3ngOCF5phKzxrgHwnQK7CKo0fyF_OVtjXSrd8", color: "white" }
+          data: { token: "", color: "white" }
           response:
             - capture:
                 json: "$.responseTime"
@@ -43,7 +43,7 @@ scenarios:
 #     flow:
 #       - emit:
 #           channel: "startGame"
-#           data: { token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RyZXNzbWFuIiwiaWF0IjoxNzE5Nzk2Mzc0LCJleHAiOjE3MjAxNTYzNzR9.BAYOy8zpjUGO3kUFJPAnDZOdjN_pdfADLJzlSMyRZXU", color: "white" }
+#           data: { token: "", color: "white" }
 #       - think: 
 #       - loop:
 #           - emit:

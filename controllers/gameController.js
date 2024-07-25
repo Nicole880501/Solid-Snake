@@ -8,16 +8,16 @@ const {
 } = require('../models/game')
 const { getUser, updateUserLevel } = require('../models/user')
 const { createRecord } = require('../models/record')
-
-const INITIAL_SNAKE_LENGTH = 4
-const DEFAULT_INTERVAL = 100
-const SLOW_INTERVAL = 200
-const ACCELERATED_INTERVAL = 50
-const ACCELERATE_DURATION = 3000
-const COOLDOWN_DURATION = 20000
-const WEATHER_DURATION = 20000
-
-const WEATHER_TYPES = ['sunny', 'rainy', 'snowy']
+const {
+  INITIAL_SNAKE_LENGTH,
+  DEFAULT_INTERVAL,
+  SLOW_INTERVAL,
+  ACCELERATED_INTERVAL,
+  ACCELERATE_DURATION,
+  COOLDOWN_DURATION,
+  WEATHER_DURATION,
+  WEATHER_TYPES
+} = require('../config/gameConstant')
 
 const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
 let pubClient
@@ -63,11 +63,9 @@ function onConnection (socket) {
 
         gameState.players[socket.id] = playerData
 
-        // Set player state based on current weather
         adjustPlayerStateForWeather(gameState.players[socket.id], gameState.weather)
 
         if (!isPrimaryServer) {
-          // Send player information to the primary server
           pubClient.publish('playerJoined', JSON.stringify(playerData))
         }
 
@@ -174,7 +172,7 @@ function adjustPlayerStateForWeather (player, weather) {
     player.interval = SLOW_INTERVAL
   } else if (weather === 'snowy') {
     player.snake = player.snake.slice(0, 4)
-    player.interval = DEFAULT_INTERVAL // Set speed to default during snowy weather
+    player.interval = DEFAULT_INTERVAL
   } else if (weather === 'sunny') {
     player.interval = DEFAULT_INTERVAL
   }
@@ -207,7 +205,6 @@ function startWeatherCycle (io) {
   setInterval(() => {
     gameState.weather = WEATHER_TYPES[currentWeatherIndex]
 
-    // Handle weather effects
     adjustGameStateForWeather(gameState.weather)
 
     io.sockets.emit('weatherChange', gameState.weather)
@@ -247,7 +244,7 @@ function adjustGameStateForWeather (weather) {
     for (const playerId in gameState.players) {
       const player = gameState.players[playerId]
       player.snake = player.snake.slice(0, 4)
-      player.interval = DEFAULT_INTERVAL // Set speed to default during snowy weather
+      player.interval = DEFAULT_INTERVAL
     }
   }
 }
@@ -352,7 +349,6 @@ function gameLoop (io) {
     }
   }
 
-  // Check head collisions after all moves
   for (const playerId in gameState.players) {
     const player = gameState.players[playerId]
     if (checkHeadCollision(player, gameState)) {
@@ -374,7 +370,7 @@ function gameLoop (io) {
   }, 1000)
 
   if (isPrimaryServer) {
-    io.sockets.emit('gameState', gameState) // 主服务器广播游戏状态
+    io.sockets.emit('gameState', gameState)
   }
 }
 

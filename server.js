@@ -1,37 +1,34 @@
 const express = require('express')
 const http = require('http')
 const socketIo = require('socket.io')
-const { createClient } = require('redis')
 const { createAdapter } = require('@socket.io/redis-adapter')
 const { onConnection, gameLoop, startWeatherCycle, updateGameState, addPlayer, setPubClient } = require('./controllers/gameController')
 const { gameState } = require('./models/game')
 const { errorHandler, socketErrorHandler } = require('./utils/errorHandler')
-
-const DEFAULT_INTERVAL = 100
-const ACCELERATED_INTERVAL = 50
-const ACCELERATE_DURATION = 3000
-const COOLDOWN_DURATION = 20000
+const {
+  DEFAULT_INTERVAL,
+  ACCELERATED_INTERVAL,
+  ACCELERATE_DURATION,
+  COOLDOWN_DURATION
+} = require('./config/gameConstant')
+const { pubClient, subClient, connectRedisClients } = require('./service/redisClient')
+const dotenv = require('dotenv')
+dotenv.config()
 
 const app = express()
 const path = require('path')
 const server = http.createServer(app)
 const io = socketIo(server)
 
-const dotenv = require('dotenv')
-dotenv.config()
-
 const isPrimaryServer = process.env.IS_PRIMARY_SERVER === 'true'
-
-const pubClient = createClient({ url: process.env.REDIS_URL })
-const subClient = pubClient.duplicate()
 
 const userRoutes = require('./routes/user')
 const recordRoutes = require('./routes/record')
 
-Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+connectRedisClients().then(() => {
   io.adapter(createAdapter(pubClient, subClient))
 
-  setPubClient(pubClient) // 设置 pubClient
+  setPubClient(pubClient)
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
@@ -45,6 +42,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'))
   })
 
+  // this route is for AWS load balancer check health state
   app.get('/health', async (req, res) => {
     res.status(200).send('ok')
   })
@@ -72,7 +70,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   })
 
   io.on('connection', (socket) => {
-    onConnection(socket) // 处理新连接
+    onConnection(socket)
   })
 
   if (isPrimaryServer) {
@@ -83,11 +81,11 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
 
     setInterval(() => {
       pubClient.publish('gameStateUpdate', JSON.stringify(gameState))
-    }, 100) // 定期广播游戏状态
+    }, 100)
 
     subClient.subscribe('playerJoined', (message) => {
       const playerData = JSON.parse(message)
-      addPlayer(playerData) // 主服务器接收到玩家信息后将其加入游戏状态
+      addPlayer(playerData)
     })
 
     subClient.subscribe('changeDirection', (message) => {

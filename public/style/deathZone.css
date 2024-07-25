@@ -22,7 +22,7 @@
     height: 800px;
   }
   #tooltip {
-    position: absolute;
+    position: fixed;
     background: rgba(0, 0, 0, 0.7);
     color: #fff;
     padding: 5px;
